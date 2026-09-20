@@ -270,10 +270,10 @@ export function budgetedLiveProvider(provider: DecisionProvider, budget: LiveBud
     if (totals.requests >= budget.maxRequests) throw new Error(`Live request cap reached (${budget.maxRequests}).`);
     if (totals.inputTokens >= budget.maxInputTokens) throw new Error(`Live input-token cap reached (${budget.maxInputTokens}).`);
     if (totals.outputTokens >= budget.maxOutputTokens) throw new Error(`Live output-token cap reached (${budget.maxOutputTokens}).`);
+    totals.requests++;
     const started = performance.now();
     try {
       const response = await provider.decide(input, questions, signal);
-      totals.requests++;
       totals.inputTokens += response.usage.input_tokens;
       totals.outputTokens += response.usage.output_tokens;
       if (totals.inputTokens > budget.maxInputTokens || totals.outputTokens > budget.maxOutputTokens) {

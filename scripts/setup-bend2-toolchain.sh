@@ -16,5 +16,9 @@ git -C "$BEND_ROOT" checkout --detach "$BEND_REVISION"
 test "$(git -C "$BEND_ROOT" rev-parse HEAD)" = "$BEND_REVISION"
 test -f "$BEND_ROOT/bend2/bend.ts"
 test -f "$BEND_ROOT/bend2/comp.ts"
+if [[ -n "$(git -C "$BEND_ROOT" status --porcelain --untracked-files=all)" ]]; then
+  printf 'Bend checkout has local modifications: %s\n' "$BEND_ROOT" >&2
+  exit 1
+fi
 
 printf 'Bend 2 toolchain ready: %s\n' "$BEND_REVISION"

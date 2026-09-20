@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "mode": "offline",
-  "startedAt": "2026-09-20T20:56:57.607Z",
-  "endedAt": "2026-09-20T20:56:59.042Z",
+  "startedAt": "2026-09-20T21:11:04.326Z",
+  "endedAt": "2026-09-20T21:11:05.746Z",
   "toolchain": {
     "bendVersion": "2.0.20",
     "bendRevision": "7561656155a4285c1e4ccfcb3505ab59524de973",
@@ -15,8 +15,8 @@
     "failureCount": 0,
     "requestCount": 26,
     "tokenCount": { "input": 0, "output": 0, "total": 0 },
-    "providerLatencyMs": 0.5309990000000653,
-    "wallTimeMs": 1435.134636
+    "providerLatencyMs": 0.731712000000158,
+    "wallTimeMs": 1420.33606
   },
   "cases": [
     {
@@ -27,8 +27,8 @@
       "measurements": {
         "requestCount": 10,
         "tokenCount": { "input": 0, "output": 0, "total": 0 },
-        "providerLatencyMs": 0.2900240000000167,
-        "wallTimeMs": 483.430842
+        "providerLatencyMs": 0.23261299999992957,
+        "wallTimeMs": 466.54024899999996
       }
     },
     {
@@ -39,8 +39,8 @@
       "measurements": {
         "requestCount": 8,
         "tokenCount": { "input": 0, "output": 0, "total": 0 },
-        "providerLatencyMs": 0.07645599999989372,
-        "wallTimeMs": 475.34453899999994
+        "providerLatencyMs": 0.4298500000001013,
+        "wallTimeMs": 467.13834199999985
       }
     },
     {
@@ -51,8 +51,8 @@
       "measurements": {
         "requestCount": 8,
         "tokenCount": { "input": 0, "output": 0, "total": 0 },
-        "providerLatencyMs": 0.16451900000015485,
-        "wallTimeMs": 451.93725599999993
+        "providerLatencyMs": 0.06924900000012713,
+        "wallTimeMs": 471.3279400000001
       }
     }
   ]

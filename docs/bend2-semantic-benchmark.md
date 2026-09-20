@@ -153,7 +153,9 @@ corepack pnpm exec tsx benchmark/bend2/run.ts --live
 The provider stops before another request when any cap is reached. Token usage
 arrives with a response, so a single response can cross a token cap; the runner
 then records the overage and makes no further request. Set authorized token
-caps with enough headroom for one bounded decision response.
+caps with enough headroom for one bounded decision response. The request count
+is reserved before dispatch, so rejected and timed-out provider calls still
+consume the request cap.
 
 ## Limits
 
@@ -175,7 +177,9 @@ Select Node `24.21.0` and rerun the command.
 
 If setup cannot fetch Bend, check GitHub access and rerun
 `corepack pnpm run benchmark:bend2:setup`. The script reuses a valid clone and
-always resets it to the pinned detached commit.
+checks out the pinned detached commit. It refuses tracked or untracked local
+changes instead of reporting a modified compiler as reproducible. Remove those
+changes yourself or choose a fresh `JEV_BENCH_TOOL_ROOT`.
 
 `Offline strategy expected slot ...` means the generator's decision sequence
 changed. Review the generator change and update the strategy only if the task

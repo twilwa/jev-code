@@ -106,3 +106,15 @@ test('live provider refuses a request after its exact cap', async () => {
   assert.deepEqual({ requests: totals.requests, inputTokens: totals.inputTokens, outputTokens: totals.outputTokens },
     { requests: 1, inputTokens: 2, outputTokens: 1 });
 });
+
+test('a failed live call is charged before dispatch and cannot exceed the request cap', async () => {
+  let calls = 0;
+  const failing: DecisionProvider = { decide: async () => { calls++; throw new Error('provider unavailable'); } };
+  const totals = { requests: 0, inputTokens: 0, outputTokens: 0, latencyMs: 0 };
+  const provider = budgetedLiveProvider(failing, { maxRequests: 1, maxInputTokens: 10, maxOutputTokens: 10 }, totals);
+  const question = { selection: { type: 'choice', description: 'pick', criteria: { a: 'A', b: 'B' } } } as never;
+  await assert.rejects(provider.decide({}, question), /provider unavailable/);
+  await assert.rejects(provider.decide({}, question), /request cap reached/);
+  assert.equal(calls, 1);
+  assert.equal(totals.requests, 1);
+});
