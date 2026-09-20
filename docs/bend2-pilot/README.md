@@ -15,6 +15,7 @@ documents and never reproduced or edited here.
 | `01-inspection.md` | 1 | Pinned revisions, the unresolved licence, the four boundary maps, and what Bend 2 actually is and requires. |
 | `02-graph.md` | 1 | The CoderMind/RPG graph: how it was produced, what it contains, where it is weak, and the TES-36 deduplication answer. |
 | `03-tickets.md` | 2 | The native-Bend-AST design decision with the evidence that decided it, the alternatives rejected, and the scoped tickets derived from graph nodes. |
+| `04-report.md` | 3 | What was built, the three claims stated separately with separate evidence, request counts in their own section, the known limits, and the measured test results. |
 
 `evidence/` holds the raw material those documents cite — command output,
 probes, and the graph artefacts — so every number can be re-derived without
