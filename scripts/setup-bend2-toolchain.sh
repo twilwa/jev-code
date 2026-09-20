@@ -3,12 +3,17 @@ set -euo pipefail
 
 readonly BEND_REVISION=7561656155a4285c1e4ccfcb3505ab59524de973
 readonly BEND_REPOSITORY=https://github.com/bendlang/bend.git
-readonly TOOL_ROOT="${JEV_BENCH_TOOL_ROOT:-.benchmark-tools}"
-readonly BEND_ROOT="$TOOL_ROOT/bend"
+readonly SCRIPT_DIRECTORY="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+readonly BEND_ROOT="$(bash "$SCRIPT_DIRECTORY/resolve-bend2-toolchain-path.sh")"
 
-mkdir -p "$TOOL_ROOT"
+mkdir -p "$(dirname -- "$BEND_ROOT")"
 if [[ ! -d "$BEND_ROOT/.git" ]]; then
   git clone --filter=blob:none --no-checkout "$BEND_REPOSITORY" "$BEND_ROOT"
+fi
+
+if [[ -n "$(git -C "$BEND_ROOT" status --porcelain --untracked-files=all)" ]]; then
+  printf 'Bend checkout has local modifications: %s\n' "$BEND_ROOT" >&2
+  exit 1
 fi
 
 git -C "$BEND_ROOT" fetch --depth=1 origin "$BEND_REVISION"

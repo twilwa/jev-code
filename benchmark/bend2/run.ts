@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -7,8 +8,11 @@ import { JevProvider } from '../../src/provider.js';
 const here = dirname(fileURLToPath(import.meta.url));
 const root = here;
 const repository = resolve(here, '..', '..');
-const toolRoot = resolve(process.env.JEV_BENCH_TOOL_ROOT ?? join(repository, '.benchmark-tools'));
-const bendRoot = resolve(process.env.JEV_BEND_PATH ?? join(toolRoot, 'bend'));
+const bendRoot = execFileSync('bash', [join(repository, 'scripts', 'resolve-bend2-toolchain-path.sh')], {
+  cwd: repository,
+  encoding: 'utf8',
+  env: process.env,
+}).trim();
 const args = process.argv.slice(2);
 const live = args.includes('--live');
 if (live && args.includes('--offline')) throw new Error('Choose either --offline or --live.');

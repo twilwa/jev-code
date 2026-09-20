@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { dirname, join, resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import type { EntryType, Questions, SystemOneResult } from '@typesafe-ai/sdk';
@@ -11,6 +14,7 @@ import {
 import type { DecisionProvider } from '../src/sdk/types.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
+const repository = resolve(here, '..');
 const root = join(here, '..', 'benchmark', 'bend2');
 const signals: CompilerSignals = { parse: 'pass', type: 'pass', ownership: 'pass' };
 const expected = { stdout: '42\n', exitCode: 0 as const };
@@ -117,4 +121,45 @@ test('a failed live call is charged before dispatch and cannot exceed the reques
   await assert.rejects(provider.decide({}, question), /request cap reached/);
   assert.equal(calls, 1);
   assert.equal(totals.requests, 1);
+});
+
+test('setup gives JEV_BEND_PATH precedence and rejects a dirty pinned checkout', {
+  skip: bendRoot ? false : 'set JEV_BEND_PATH',
+}, async () => {
+  const temporaryRoot = await mkdtemp(join(tmpdir(), 'jev-bend-toolchain-'));
+  const configuredBendRoot = resolve(repository, bendRoot!);
+  const dirtyMarker = join(configuredBendRoot, `.jev-dirty-test-${process.pid}`);
+  const unusedToolRoot = join(temporaryRoot, 'unused-tools');
+  const setupScript = join(repository, 'scripts', 'setup-bend2-toolchain.sh');
+
+  try {
+    assert.equal(
+      execFileSync('git', ['-C', configuredBendRoot, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+      '7561656155a4285c1e4ccfcb3505ab59524de973',
+    );
+    assert.equal(
+      execFileSync('git', ['-C', configuredBendRoot, 'status', '--porcelain', '--untracked-files=all'], { encoding: 'utf8' }),
+      '',
+      'the configured Bend checkout must start clean',
+    );
+    await writeFile(dirtyMarker, 'dirty\n');
+
+    const result = spawnSync('bash', [setupScript], {
+      cwd: repository,
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        JEV_BEND_PATH: configuredBendRoot,
+        JEV_BENCH_TOOL_ROOT: unusedToolRoot,
+      },
+    });
+
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /Bend checkout has local modifications/);
+    assert.match(result.stderr, new RegExp(configuredBendRoot.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    assert.equal(existsSync(unusedToolRoot), false, 'setup must not use JEV_BENCH_TOOL_ROOT when JEV_BEND_PATH is set');
+  } finally {
+    await rm(dirtyMarker, { force: true });
+    await rm(temporaryRoot, { recursive: true, force: true });
+  }
 });

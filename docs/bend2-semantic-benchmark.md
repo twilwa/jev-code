@@ -43,8 +43,11 @@ independent, and records the trusted toolchain. No compiler fork, patched
 output, foreign implementation, or vendored Bend source is involved.
 
 The setup script clones Bend into the ignored `.benchmark-tools/bend`
-directory and checks out the exact commit. The benchmark refuses a different
-Bend revision, Bend version, or Node version.
+directory and checks out the exact commit. Set `JEV_BENCH_TOOL_ROOT` to put
+the tool directory elsewhere, or set `JEV_BEND_PATH` to use a specific Bend
+checkout. `JEV_BEND_PATH` takes precedence in both setup and execution. Relative
+override paths resolve from the jev-code repository root. The benchmark refuses
+a different Bend revision, Bend version, or Node version.
 
 ## Setup and one-command run
 
@@ -180,6 +183,11 @@ If setup cannot fetch Bend, check GitHub access and rerun
 checks out the pinned detached commit. It refuses tracked or untracked local
 changes instead of reporting a modified compiler as reproducible. Remove those
 changes yourself or choose a fresh `JEV_BENCH_TOOL_ROOT`.
+
+If you set `JEV_BEND_PATH`, setup checks that checkout instead of the path under
+`JEV_BENCH_TOOL_ROOT`. A dirty `JEV_BEND_PATH` checkout fails before setup
+fetches or changes it. Remove the local changes yourself or point
+`JEV_BEND_PATH` at a clean checkout of the pinned revision.
 
 `Offline strategy expected slot ...` means the generator's decision sequence
 changed. Review the generator change and update the strategy only if the task
