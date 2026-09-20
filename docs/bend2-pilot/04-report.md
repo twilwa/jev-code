@@ -16,9 +16,9 @@ vendored (see §7).
 
 | File | Status | Contents |
 | --- | --- | --- |
-| `src/bend-ast.ts` | new, 328 lines | Bend term types, renderer, the bounded decision loop, the four-stage checker driver, and the `bendAstAdapter` object. |
+| `src/bend-ast.ts` | new, 356 lines | Bend term types, renderer, the bounded decision loop, the four-stage checker driver, and the `bendAstAdapter` object. |
 | `src/lang/index.ts` | modified, +2 −1 | One import and one array element appending `bendAstAdapter` to `bundledAstAdapters()`. |
-| `test/bend-ast.test.ts` | new, 355 lines | 25 tests: renderer units, decision-loop units, registry and routing, validation, rejection fixtures, end-to-end, a seeded fuzz round, and two self-checking lints. |
+| `test/bend-ast.test.ts` | new, 397 lines | 27 tests: renderer units, decision-loop units, registry and routing, validation, rejection fixtures, end-to-end, a seeded fuzz round, and two self-checking lints. |
 | `docs/bend2-pilot/evidence/subset-spec.md` | new | Ticket T11's candidate baseline: the supported subset, each row cited to a probe. |
 | `docs/bend2-pilot/evidence/request-count.mts`, `request-count.txt` | new | The request-count measurement of §6 and its recorded output. |
 
@@ -119,12 +119,12 @@ extracts every test name, and fails if any contains `correct`, `correctly`,
 | Run | Result |
 | --- | --- |
 | `pnpm run typecheck` | exit **0** |
-| `test/bend-ast.test.ts` with `JEV_BEND_PATH` set | 25 tests, **25 pass**, 0 fail, 0 skipped |
-| `test/bend-ast.test.ts` with `JEV_BEND_PATH` unset | 25 tests, 15 pass, 0 fail, **10 skipped** |
-| `test/bend-ast.test.ts` at `JEV_BEND_FUZZ_ROUNDS=400` | all pass, 37.7 s |
-| `pnpm run test` (full suite) with `JEV_BEND_PATH` set | 334 tests, 322 pass, **1 fail**, 11 skipped, exit **1** |
+| `test/bend-ast.test.ts` with `JEV_BEND_PATH` set | 27 tests, **27 pass**, 0 fail, 0 skipped |
+| `test/bend-ast.test.ts` with `JEV_BEND_PATH` unset | 27 tests, 16 pass, 0 fail, **11 skipped** |
+| `test/bend-ast.test.ts` at `JEV_BEND_FUZZ_ROUNDS=400` | all pass, 32.9 s |
+| `pnpm run test` (full suite) with `JEV_BEND_PATH` set | 336 tests, 324 pass, **1 fail**, 11 skipped, exit **1** |
 
-The ten skips without the checker are **unverified, not passed**: they are the
+The eleven skips without the checker are **unverified, not passed**: they are the
 compiler-backed assertions, and the test file labels them
 `set JEV_BEND_PATH to a bendlang/bend checkout` rather than reporting green.
 
@@ -142,8 +142,8 @@ mise use -g go@1.27.1
 This is **pre-existing and environmental**, not caused by this work:
 
 - The same failure was recorded on this VPS before any change in this branch was
-  made (then: 309 tests, 297 pass, 1 fail, 11 skipped). This branch adds 25
-  tests and 25 passes — 334 and 322 — and moves nothing else.
+  made (then: 309 tests, 297 pass, 1 fail, 11 skipped). This branch adds 27
+  tests and 27 passes — 336 and 324 — and moves nothing else.
 - `test/lang-fuzz.test.ts` is unmodified in this branch (`git diff HEAD` touches
   only `src/lang/index.ts`), and it imports `Dialect` values directly
   (`:6-13`), not the adapter registry, so `bendAstAdapter` is not reachable from
@@ -172,7 +172,7 @@ RNG provider (no model, no paid API spend); recorded in
 `evidence/request-count.txt`:
 
 ```
-programs=40 total_requests=856 min=4 median=19 max=54 mean=21.4
+programs=40 total_requests=882 min=4 median=20 max=54 mean=22.1
 lines min=6 max=15
 ```
 
@@ -235,14 +235,56 @@ A second consequence of the same mechanism: strip-only mode rejects TypeScript
 parameter properties, so `BendCheckError` declares `readonly stage` as a field
 and assigns it in the constructor rather than using the shorthand.
 
-**A duplicate parameter binder is not caught by any checker stage.** Measured,
-not assumed: `def dup(+a: U32, +a: U32) -> U32` is accepted at `parse`, `type`
-and `owned` — the checker treats the second binder as shadowing. The generator
-therefore cannot rely on a compiler stage to catch it, and reserves each
-parameter name as it is chosen (`src/bend-ast.ts:292-296`); the guard is a
-renderer-level assertion in `test/bend-ast.test.ts:144`, not a validation
-result. This is a worked example of why the three claims are kept apart: a
-clean run of all three stages was, here, evidence of nothing about this defect.
+### Where names in a rendered program come from
+
+Two review findings were the same defect twice — a generated name colliding
+with a name some other part of the program introduced — so the accounting is
+written out here rather than patched a third time.
+
+A rendered program contains exactly four kinds of **allocated** binder, and all
+four go through one collision-aware path, `takenNames()`
+(`src/bend-ast.ts:244`), which is the union of the current scope, the helper
+definition names, and the `reserved` set:
+
+| Binder | Allocated by | Held for |
+| --- | --- | --- |
+| helper definition name | `freshIdentifier` (`:249`), then `reserved` | the rest of the program |
+| helper parameters | `freshIdentifier`, then `reserved` (`:317`) | the definition body, then released with the scope entry |
+| do-block bindings | `freshIdentifier` (`:339`) | the rest of the block, via `scope` |
+| the `Unit` binder sequencing each print | `reserveDerived` (`:262`, called at `:334`) | the rest of the program |
+
+The last row is the fix for the second finding. The sequencing name used to be
+invented inside `render` as `u0`, `u1`, … with nothing reserving it, so an
+objective whose vocabulary contained `u0` could have a do-block binding named
+`u0` shadowed by the next print step. The name now lives in the `BendStep`
+itself (`:37-44`), which is what makes the property structural rather than
+conventional: **the renderer cannot emit a binder the generator did not
+allocate**, because it has no name of its own to emit.
+
+**Names outside that path, stated by name rather than implied away.** The
+renderer also emits fixed text that is not allocated: `main`, `Base`, `Unit`,
+`IO`, the type names `U32`/`String`/`Bool`, and the builtin function names in
+`BEND_BUILTINS`. These cannot collide with an allocated name. `main`, `Base`,
+`Unit` and `IO` are seeded into `reserved` at `:236`; the others are excluded
+because `available()` (`:245`) requires a lowercase-or-underscore initial, which
+every one of them fails, and separately rejects anything in `BEND_KEYWORDS` or
+`BEND_BUILTINS`. That is the complete list — there is no fifth source.
+
+**What the checker does and does not catch here.** Measured, not assumed:
+
+- `def dup(+a: U32, +a: U32) -> U32` is **accepted** at `parse`, `type` and
+  `owned`; the checker treats the second binder as shadowing.
+- A shadowed do-block binding is refused at `type` (`expected U32, observed
+  Unit`) **only if the shadowed name is read after the shadow**. If it is never
+  read again, the program is accepted at every stage.
+
+So the compiler covers part of this defect class and none of the other part.
+Both guards are therefore renderer-level assertions over generated source
+(`test/bend-ast.test.ts:144` and `:178`), and two further tests record the
+checker's measured behaviour as behaviour (`:173`, `:209`) rather than dressing
+it up as a rejection that does not happen. This is a worked example of why the
+three claims are kept apart: for the duplicate-binder case, a clean run of all
+three stages was evidence of nothing.
 
 **Compiler back ends untouched.** No change to `bend2/bend.ts` or any upstream
 code; the checker is called through its existing exported functions only.

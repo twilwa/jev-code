@@ -7,5 +7,5 @@
 # executes the programs counted; those are separate claims with separate
 # evidence (see 04-report.md).
 
-programs=40 total_requests=856 min=4 median=19 max=54 mean=21.4
+programs=40 total_requests=882 min=4 median=20 max=54 mean=22.1
 lines min=6 max=15

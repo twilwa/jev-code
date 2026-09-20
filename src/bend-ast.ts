@@ -37,7 +37,10 @@ export interface BendDef { id: string; params: BendParam[]; returns: BendType; b
 export type BendStep =
   | { kind: 'hole' }
   | { kind: 'bind'; id: string; type: BendType; value: BendExpr }
-  | { kind: 'print'; value: BendExpr };
+  /** `id` binds the `Unit` that sequences this print. It is carried in the step
+   * rather than invented while rendering so that every binder in a rendered
+   * program comes from the generator's one allocator. */
+  | { kind: 'print'; id: string; value: BendExpr };
 
 export interface BendProgram { defs: BendDef[]; steps: BendStep[]; result: BendExpr }
 
@@ -77,11 +80,10 @@ export const render = (program: BendProgram): string => {
     lines.push(`def ${def.id}(${def.params.map(p => `+${p.id}: ${p.type}`).join(', ')}) -> ${def.returns}:`, `  ${renderExpr(def.body)}`, '');
   }
   lines.push('def main() -> IO(Unit):', '  do IO<Unit>:');
-  let sequenced = 0;
   for (const step of program.steps) {
     if (step.kind === 'hole') lines.push(`    ${PENDING}`);
     else if (step.kind === 'bind') lines.push(`    +${step.id} : ${step.type} = ${renderExpr(step.value)}`);
-    else lines.push(`    u${sequenced++} : Unit <- IO.print(${renderExpr(step.value)})`);
+    else lines.push(`    ${step.id} : Unit <- IO.print(${renderExpr(step.value)})`);
   }
   lines.push(`    IO.print(${renderExpr(program.result)})`);
   return lines.join('\n') + '\n';
@@ -233,13 +235,35 @@ export async function generateBendAst(decisions: Decisions, state: State, field:
 
   const reserved = new Set(['main', 'Base', 'Unit', 'IO']);
 
+  /**
+   * The one place that knows which names a rendered program already contains:
+   * definition names, their parameters, do-block bindings, and the `Unit`
+   * binders that sequence prints. Both allocators below go through it, so the
+   * renderer cannot introduce a binder the generator has never seen.
+   */
+  const takenNames = (): Set<string> => new Set([...scope.keys(), ...program.defs.map(def => def.id), ...reserved]);
+  const available = (id: string, taken: Set<string>): boolean =>
+    /^[a-z_][A-Za-z0-9_]*$/.test(id) && !BEND_KEYWORDS.has(id) && !taken.has(id) && !(id in BEND_BUILTINS);
+
+  /** Names the model chooses: definitions, parameters, do-block bindings. */
   async function freshIdentifier(slot: string): Promise<string> {
-    const taken = new Set([...scope.keys(), ...program.defs.map(def => def.id), ...reserved]);
-    const candidates = vocab.identifiers.map(identifierFrom)
-      .filter(id => /^[a-z_][A-Za-z0-9_]*$/.test(id) && !BEND_KEYWORDS.has(id) && !taken.has(id) && !(id in BEND_BUILTINS));
-    const pool = [...new Set(candidates)].slice(0, 64);
+    const taken = takenNames();
+    const pool = [...new Set(vocab.identifiers.map(identifierFrom).filter(id => available(id, taken)))].slice(0, 64);
     if (!pool.length) throw new Error('No Bend identifier is available for a new binding.');
     return chooseFrom(slot, pool, id => `Name it ${id}.`);
+  }
+
+  /**
+   * Names the model is not asked for: the sequencing binders, which are never
+   * referenced. Suffixed until free, then held for the rest of the program so
+   * that a later binding cannot shadow one.
+   */
+  function reserveDerived(base: string): string {
+    const taken = takenNames();
+    let id = base;
+    for (let suffix = 1; !available(id, taken); suffix++) id = `${base}_${suffix}`;
+    reserved.add(id);
+    return id;
   }
 
   const calleesFor = (want: BendType): Array<{ id: string; params: BendType[]; doc: string }> => [
@@ -306,7 +330,11 @@ export async function generateBendAst(decisions: Decisions, state: State, field:
     const criteria: Record<string, string> = { bind: 'Bind a new named value for later use.', print: 'Print a line now, then continue.', finish: 'The block needs only its final printed line; finish it.' };
     const production = await pick('do_block', criteria);
     if (production === 'finish') break;
-    if (production === 'print') { program.steps.push({ kind: 'print', value: await expression('String', `step_${program.steps.length}`, 0) }); continue; }
+    if (production === 'print') {
+      const id = reserveDerived(`u${program.steps.filter(s => s.kind === 'print').length}`);
+      program.steps.push({ kind: 'print', id, value: await expression('String', `step_${program.steps.length}`, 0) });
+      continue;
+    }
     const type = await pick('binding_type', { U32: 'A U32 number.', String: 'A String.' }) as BendType;
     const id = await freshIdentifier(`binding_${program.steps.length}`);
     program.steps.push({ kind: 'hole' });

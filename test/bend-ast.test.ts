@@ -43,7 +43,7 @@ test('renderer emits the do-block form the probes proved legal', () => {
       body: { kind: 'call', callee: 'U32.add', args: [{ kind: 'name', id: 'a' }, { kind: 'name', id: 'b' }] } }],
     steps: [
       { kind: 'bind', id: 'x', type: 'U32', value: { kind: 'u32', value: 6 } },
-      { kind: 'print', value: { kind: 'str', value: 'first' } },
+      { kind: 'print', id: 'u0', value: { kind: 'str', value: 'first' } },
     ],
     result: { kind: 'call', callee: 'U32.show', args: [{ kind: 'call', callee: 'add2', args: [{ kind: 'name', id: 'x' }, { kind: 'u32', value: 7 }] }] },
   };
@@ -173,6 +173,48 @@ test('a provider that picks the first option for both parameter slots still gets
 test('the real Bend checker accepts a duplicate parameter binder, so no stage catches it', { skip: checkerAvailable() ? false : skipWithoutChecker }, async () => {
   resetBendChecker();
   await validateBendSource('import Base\n\ndef dup(+a: U32, +a: U32) -> U32:\n  U32.add(a, a)\n\ndef main() -> IO(Unit):\n  do IO<Unit>:\n    IO.print(U32.show(dup(1, 2)))\n', signal());
+});
+
+test('a print step cannot take the name of a live binding', async () => {
+  // `u0` is in this objective's vocabulary, so the allocator can hand it to a
+  // do-block binding. A print step that then invented `u0` for its own Unit
+  // binder would shadow that binding inside the same block.
+  const source = await run('print u0 then show the u0 total', ({ slot, criteria }, n) => {
+    switch (slot) {
+      case 'helper_definition': return 'none';
+      case 'do_block': return n === 0 ? 'bind' : n === 1 ? 'print' : 'finish';
+      case 'binding_type': return 'U32';
+      case 'binding_0': return 'Name it u0.';
+      case 'binding_0_value': return 'u32';
+      case 'step_1': return 'str';
+      case 'final_print': return 'call';
+      case 'final_print:callee': return BEND_BUILTINS['U32.show']!.doc;
+      case 'final_print:argument_0': return 'name';
+      default: return criteria[0]!;
+    }
+  });
+  assert.match(source, /^ {4}\+u0 : U32 = /m, `the binding was not named u0:\n${source}`);
+  assert.match(source, /^ {4}\w+ : Unit <- IO\.print\(/m, `no print step was sequenced:\n${source}`);
+  const binders = [...source.matchAll(/^ {4}\+?(\w+) : /gm)].map(match => match[1]!);
+  assert.equal(new Set(binders).size, binders.length, `a binder is shadowed inside the do block:\n${source}`);
+});
+
+/**
+ * Measured, not assumed. The checker catches a shadowed binder only when the
+ * shadowed name is read after the shadow; if it is never read again the program
+ * is accepted at every stage. So the compiler covers part of this defect and
+ * the allocator covers the rest, which is why the test above asserts on the
+ * rendered binders rather than on a validation result.
+ */
+test('the real Bend checker refuses a shadowed binder only when it is read after the shadow', { skip: checkerAvailable() ? false : skipWithoutChecker }, async () => {
+  resetBendChecker();
+  const shadowed = (tail: string): string =>
+    `import Base\n\ndef main() -> IO(Unit):\n  do IO<Unit>:\n    +u0 : U32 = 5\n    u0 : Unit <- IO.print("hi")\n    ${tail}\n`;
+  const error = await validateBendSource(shadowed('IO.print(U32.show(u0))'), signal()).then(() => undefined, (reason: unknown) => reason);
+  assert.ok(error instanceof BendCheckError, `expected a staged rejection, got ${String(error)}`);
+  assert.equal(error.stage, 'type');
+  assert.match(error.message, /Unit/);
+  await validateBendSource(shadowed('IO.print("done")'), signal());
 });
 
 test('generator refuses to exceed its production budget', async () => {

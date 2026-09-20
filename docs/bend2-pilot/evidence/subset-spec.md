@@ -123,7 +123,14 @@ which the unresolved licence question forbids.
 
 A duplicate parameter binder — `def dup(+a: U32, +a: U32) -> U32` — is
 **accepted** at all three stages; the checker treats the second binder as
-shadowing rather than as an error. Recorded here because it marks the edge of
-what a clean three-stage run is evidence of. Nothing in this baseline may be
-read as "the checker would have caught it": for this defect it demonstrably does
-not, and the generator guards it at the point of construction instead.
+shadowing rather than as an error.
+
+A shadowed do-block binding is refused at `book_valid` with `expected U32,
+observed Unit` **only when the shadowed name is read after the shadow**. Where
+it is never read again — `+u0 : U32 = 5` followed by `u0 : Unit <- IO.print(…)`
+and no further use of `u0` — the program is **accepted** at all three stages.
+
+Both are recorded here because they mark the edge of what a clean three-stage
+run is evidence of. Nothing in this baseline may be read as "the checker would
+have caught it": for these defects it demonstrably does not, or does so only in
+part, and the generator guards them at the point of construction instead.
