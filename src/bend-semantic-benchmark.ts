@@ -240,6 +240,8 @@ const exec = (file: string, args: string[]): Promise<string> => new Promise((don
 });
 
 export async function inspectBenchmarkToolchain(bendRoot: string): Promise<BenchmarkReport['toolchain']> {
+  const status = await exec('git', ['-C', bendRoot, 'status', '--porcelain', '--untracked-files=all']);
+  if (status) throw new Error(`Bend checkout has local modifications: ${bendRoot}`);
   const revision = await exec('git', ['-C', bendRoot, 'rev-parse', 'HEAD']);
   if (revision !== BEND_BENCHMARK_REVISION) throw new Error(`Bend revision mismatch: expected ${BEND_BENCHMARK_REVISION}, found ${revision}.`);
   const main = await readFile(join(bendRoot, 'bend2', 'main.ts'), 'utf8');

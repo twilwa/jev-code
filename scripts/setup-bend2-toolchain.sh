@@ -7,11 +7,9 @@ readonly SCRIPT_DIRECTORY="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P
 readonly BEND_ROOT="$(bash "$SCRIPT_DIRECTORY/resolve-bend2-toolchain-path.sh")"
 
 mkdir -p "$(dirname -- "$BEND_ROOT")"
-if [[ ! -d "$BEND_ROOT/.git" ]]; then
+if [[ ! -e "$BEND_ROOT/.git" ]]; then
   git clone --filter=blob:none --no-checkout "$BEND_REPOSITORY" "$BEND_ROOT"
-fi
-
-if [[ -n "$(git -C "$BEND_ROOT" status --porcelain --untracked-files=all)" ]]; then
+elif [[ -n "$(git -C "$BEND_ROOT" status --porcelain --untracked-files=all)" ]]; then
   printf 'Bend checkout has local modifications: %s\n' "$BEND_ROOT" >&2
   exit 1
 fi

@@ -187,7 +187,10 @@ changes yourself or choose a fresh `JEV_BENCH_TOOL_ROOT`.
 If you set `JEV_BEND_PATH`, setup checks that checkout instead of the path under
 `JEV_BENCH_TOOL_ROOT`. A dirty `JEV_BEND_PATH` checkout fails before setup
 fetches or changes it. Remove the local changes yourself or point
-`JEV_BEND_PATH` at a clean checkout of the pinned revision.
+`JEV_BEND_PATH` at a clean checkout of the pinned revision. The execution
+command repeats the cleanliness check before it generates a candidate, so a
+direct live command cannot spend from its request budget with a modified
+compiler.
 
 `Offline strategy expected slot ...` means the generator's decision sequence
 changed. Review the generator change and update the strategy only if the task

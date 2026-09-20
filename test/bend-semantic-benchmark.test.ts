@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import type { EntryType, Questions, SystemOneResult } from '@typesafe-ai/sdk';
 import {
   budgetedLiveProvider, classifyExecution, executeBendSource, loadBenchmarkCases, offlineStrategyProvider,
-  parseBenchmarkCase, parseOfflineStrategy, type CompilerSignals, type OfflineStrategy,
+  parseBenchmarkCase, parseOfflineStrategy, runLiveBenchmark, type CompilerSignals, type OfflineStrategy,
 } from '../src/bend-semantic-benchmark.js';
 import type { DecisionProvider } from '../src/sdk/types.js';
 
@@ -123,43 +123,63 @@ test('a failed live call is charged before dispatch and cannot exceed the reques
   assert.equal(totals.requests, 1);
 });
 
-test('setup gives JEV_BEND_PATH precedence and rejects a dirty pinned checkout', {
+test('setup and live execution reject a dirty pinned JEV_BEND_PATH checkout', {
   skip: bendRoot ? false : 'set JEV_BEND_PATH',
 }, async () => {
   const temporaryRoot = await mkdtemp(join(tmpdir(), 'jev-bend-toolchain-'));
   const configuredBendRoot = resolve(repository, bendRoot!);
-  const dirtyMarker = join(configuredBendRoot, `.jev-dirty-test-${process.pid}`);
+  const dirtyBendRoot = join(temporaryRoot, 'dirty-bend');
   const unusedToolRoot = join(temporaryRoot, 'unused-tools');
   const setupScript = join(repository, 'scripts', 'setup-bend2-toolchain.sh');
 
   try {
+    execFileSync('git', ['init', '--quiet', dirtyBendRoot]);
+    const objectDirectory = execFileSync('git', [
+      '-C', configuredBendRoot, 'rev-parse', '--path-format=absolute', '--git-path', 'objects',
+    ], { encoding: 'utf8' }).trim();
+    await writeFile(join(dirtyBendRoot, '.git', 'objects', 'info', 'alternates'), `${objectDirectory}\n`);
+    execFileSync('git', [
+      '-C', dirtyBendRoot, 'checkout', '--quiet', '--detach', '7561656155a4285c1e4ccfcb3505ab59524de973',
+    ]);
     assert.equal(
-      execFileSync('git', ['-C', configuredBendRoot, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+      execFileSync('git', ['-C', dirtyBendRoot, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
       '7561656155a4285c1e4ccfcb3505ab59524de973',
     );
     assert.equal(
-      execFileSync('git', ['-C', configuredBendRoot, 'status', '--porcelain', '--untracked-files=all'], { encoding: 'utf8' }),
+      execFileSync('git', ['-C', dirtyBendRoot, 'status', '--porcelain', '--untracked-files=all'], { encoding: 'utf8' }),
       '',
-      'the configured Bend checkout must start clean',
+      'the temporary pinned Bend checkout must start clean',
     );
-    await writeFile(dirtyMarker, 'dirty\n');
+    await writeFile(join(dirtyBendRoot, 'local-modification.txt'), 'dirty\n');
+
+    let liveRequests = 0;
+    const provider: DecisionProvider = { decide: async () => {
+      liveRequests++;
+      throw new Error('the provider must not run');
+    } };
+    await assert.rejects(
+      runLiveBenchmark({ root, bendRoot: dirtyBendRoot }, provider, {
+        maxRequests: 1, maxInputTokens: 1, maxOutputTokens: 1,
+      }),
+      /Bend checkout has local modifications/,
+    );
+    assert.equal(liveRequests, 0);
 
     const result = spawnSync('bash', [setupScript], {
       cwd: repository,
       encoding: 'utf8',
       env: {
         ...process.env,
-        JEV_BEND_PATH: configuredBendRoot,
+        JEV_BEND_PATH: dirtyBendRoot,
         JEV_BENCH_TOOL_ROOT: unusedToolRoot,
       },
     });
 
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /Bend checkout has local modifications/);
-    assert.match(result.stderr, new RegExp(configuredBendRoot.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    assert.match(result.stderr, new RegExp(dirtyBendRoot.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     assert.equal(existsSync(unusedToolRoot), false, 'setup must not use JEV_BENCH_TOOL_ROOT when JEV_BEND_PATH is set');
   } finally {
-    await rm(dirtyMarker, { force: true });
     await rm(temporaryRoot, { recursive: true, force: true });
   }
 });
