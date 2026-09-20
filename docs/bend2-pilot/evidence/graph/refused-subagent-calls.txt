@@ -1,0 +1,110 @@
+# Failed retrievals during the graph encode - sub-agent calls refused by a safety classifier.
+# Recorded because the brief requires every failed retrieval be recorded as failed.
+#
+# The encode as a whole SUCCEEDED (see encode-run.log, final JSON: status=success).
+# These are individual sub-agent calls that CoderMind's own retry logic
+# (common/llm_client.py:413 inner loop, max_retries=3; outer loop at :912)
+# absorbed.  They are recorded so the trajectory's bare
+#   'LLM call failed with return code 1: '
+# entries are not mistaken for an unexplained toolchain fault.
+
+$ python3 refused-subagent-calls.py ~/.claude/projects/<encoded-repo-path> 2026-09-20T12:49:00 <this-session-id>
+sub-agent sessions since 2026-09-20T12:49:00 ending in a refusal or API error: 7
+
+  session   2f8665af-3b28-411c-9d6e-25b95dd7f998
+  finished  2026-09-20T13:00:29
+  outcome   model_refusal_no_fallback
+  message   API Error: Opus 5's safeguards flagged this message (https://www.anthropic.com/legal/aup). This sometimes happens with safe, normal conversations. Claude Code can't respond to this message with Opus 5.
+
+Try rephrasing the request in a new session or change your model.
+
+Learn more: https://support.claude.com/en/articles/16049681
+
+Details: `[reasoning_extraction]`
+
+Request ID: req_011CfEaMC36B9RT4mTxRzHcP
+  prompt    You are an expert software architect and repository analyst. Your task: Given the followin...
+
+  session   5c1b1df8-0f0d-4359-ade1-eea9d5e9329d
+  finished  2026-09-20T13:01:03
+  outcome   model_refusal_no_fallback
+  message   API Error: Opus 5's safeguards flagged this message (https://www.anthropic.com/legal/aup). This sometimes happens with safe, normal conversations. Claude Code can't respond to this message with Opus 5.
+
+Try rephrasing the request in a new session or change your model.
+
+Learn more: https://support.claude.com/en/articles/16049681
+
+Details: `[reasoning_extraction]`
+
+Request ID: req_011CfEaPiBsD4R9v89NdWPEg
+  prompt    You are an expert software architect and repository analyst. Your task: Given the followin...
+
+  session   68558477-1636-4444-bc54-7fa358b90988
+  finished  2026-09-20T13:00:48
+  outcome   model_refusal_no_fallback
+  message   API Error: Opus 5's safeguards flagged this message (https://www.anthropic.com/legal/aup). This sometimes happens with safe, normal conversations. Claude Code can't respond to this message with Opus 5.
+
+Try rephrasing the request in a new session or change your model.
+
+Learn more: https://support.claude.com/en/articles/16049681
+
+Details: `[reasoning_extraction]`
+
+Request ID: req_011CfEaNct6j6GTR27kKDqom
+  prompt    You are an expert software architect and repository analyst. Your task: Given the followin...
+
+  session   6c596286-4fbd-479a-8c37-d2535f4fcde9
+  finished  2026-09-20T13:00:53
+  outcome   model_refusal_no_fallback
+  message   API Error: Opus 5's safeguards flagged this message (https://www.anthropic.com/legal/aup). This sometimes happens with safe, normal conversations. Claude Code can't respond to this message with Opus 5.
+
+Try rephrasing the request in a new session or change your model.
+
+Learn more: https://support.claude.com/en/articles/16049681
+
+Details: `[reasoning_extraction]`
+
+Request ID: req_011CfEaNywdMtikb2LXQsx3r
+  prompt    You are an expert software architect and repository analyst. Your task: Given the followin...
+
+  session   74764336-51ac-452d-93fc-37ba5f9adb91
+  finished  2026-09-20T13:00:36
+  outcome   model_refusal_no_fallback
+  message   API Error: Opus 5's safeguards flagged this message (https://www.anthropic.com/legal/aup). This sometimes happens with safe, normal conversations. Claude Code can't respond to this message with Opus 5.
+
+Try rephrasing the request in a new session or change your model.
+
+Learn more: https://support.claude.com/en/articles/16049681
+
+Details: `[reasoning_extraction]`
+
+Request ID: req_011CfEaMnGsiRqGkQP6jeMgg
+  prompt    You are an expert software architect and repository analyst. Your task: Given the followin...
+
+  session   81a481f3-f7c5-44bb-8ef5-92857b88bfb6
+  finished  2026-09-20T13:00:43
+  outcome   model_refusal_no_fallback
+  message   API Error: Opus 5's safeguards flagged this message (https://www.anthropic.com/legal/aup). This sometimes happens with safe, normal conversations. Claude Code can't respond to this message with Opus 5.
+
+Try rephrasing the request in a new session or change your model.
+
+Learn more: https://support.claude.com/en/articles/16049681
+
+Details: `[reasoning_extraction]`
+
+Request ID: req_011CfEaNEL2pkAiWJk42RuiP
+  prompt    You are an expert software architect and repository analyst. Your task: Given the followin...
+
+  session   9f8606f6-dd38-426f-9ceb-c1e04bbc1157
+  finished  2026-09-20T13:00:57
+  outcome   model_refusal_no_fallback
+  message   API Error: Opus 5's safeguards flagged this message (https://www.anthropic.com/legal/aup). This sometimes happens with safe, normal conversations. Claude Code can't respond to this message with Opus 5.
+
+Try rephrasing the request in a new session or change your model.
+
+Learn more: https://support.claude.com/en/articles/16049681
+
+Details: `[reasoning_extraction]`
+
+Request ID: req_011CfEaPMeqwqhuJTCshcd7X
+  prompt    You are an expert software architect and repository analyst. Your task: Given the followin...

@@ -1,0 +1,89 @@
+# Bend 2 checker probe — bendlang/bend @ 7561656155a4285c1e4ccfcb3505ab59524de973
+# Run 2026-09-20. Node v24.21.0, Linux x86_64, CPU-only.
+# No Bun installed, no GPU, no API key, no paid resources, no network during checks.
+
+## Runtime availability
+$ which bun; echo exit=$?
+exit=1  (1 = bun is NOT installed)
+$ node --version
+v24.21.0
+
+## Bun coupling audit of the pinned Bend sources
+$ grep -c '\bBun\.' bend2/bend.ts  -> 0
+$ grep -c '\bBun\.' bend2/comp.ts  -> 0
+$ grep -c '\bBun\.' bend2/main.ts  -> 4
+(bend.ts and comp.ts = 0: parser/checker have no Bun runtime dependency)
+
+## Probe driver (drives the CLI's own pipeline, main.ts:577-596)
+import * as Bend from "../bend/bend2/bend.ts";
+import * as Comp from "../bend/bend2/comp.ts";
+const file = process.argv[2];
+try {
+  const book = Bend.book_nil();
+  const seen = new Map();
+  const n0 = await Bend.book_load(book, file, "", seen);
+  console.log("PARSE+LOAD ok, n0 =", n0);
+  Bend.book_valid(book, 0);
+  console.log("TYPECHECK ok");
+  Comp.book_owned(book, Comp.SYNTH);
+  console.log("OWNERSHIP ok");
+  console.log("hols =", book.hols, "open =", book.open);
+} catch (e) {
+  console.log("FAILED:", typeof e === "string" ? e.slice(0,600) : (e?.message ?? e));
+  process.exitCode = 1;
+}
+
+## C. VALID program -> parses, types, owns
+import Base
+
+law main:
+  U32
+
+def main(): 0
+--- result:
+PARSE+LOAD ok, n0 = 479
+TYPECHECK ok
+OWNERSHIP ok
+hols = 0 open = 0
+
+## A. SYNTAX ERROR -> rejected at parse; type check never reached
+import Base
+
+law main:
+  U32
+
+def main(: 0
+--- result:
+FAILED: {
+  '$': 'Err',
+  bok: {
+    tlds: [Object: null prototype] {
+      Empty: [Object],
+      Unit: [Object],
+      Bool: [Object],
+      Cmp: [Object],
+      Either: [Object],
+      Sigma: [Object],
+      Nat: [Object],
+      Maybe: [Object],
+
+## B. TYPE ERROR -> parses cleanly, then rejected by the type checker
+import Base
+
+law main:
+  U32
+
+def main(): "hello"
+--- result:
+PARSE+LOAD ok, n0 = 479
+FAILED: {
+  '$': 'Err',
+  bok: {
+    tlds: [Object: null prototype] {
+      Empty: [Object],
+      Unit: [Object],
+      Bool: [Object],
+      Cmp: [Object],
+      Either: [Object],
+      Sigma: [Object],
+      Nat: [Object],

@@ -1,0 +1,1149 @@
+repo_name        : jev-code
+rpg nodes        : 649
+rpg edges        : 724
+dep_graph nodes  : 752
+dep_graph edges  : 1310
+excluded files   : ['docs', 'eval', 'examples', 'examples/dependency-tree.ts', 'examples/router.ts', 'test']
+
+## nodes by type
+   520  feature
+    52  feature_group
+    35  subcategory
+    34  category
+     7  functional_area
+     1  repo
+
+## edges by relation (and by generator)
+   724  invokes
+   724  generator=dep_graph
+
+## functional areas (level 1) and their subtrees
+  DecisionSdk              id=DecisionSdk_ccc6004a  nodes=94  features=76
+  ModelDecisionGateway     id=ModelDecisionGateway_c8ab7e67  nodes=36  features=29
+  CodeSynthesis            id=CodeSynthesis_ae656d47  nodes=242  features=208
+  AgentOrchestration       id=AgentOrchestration_926c7a01  nodes=84  features=68
+  SessionPresentation      id=SessionPresentation_5eacc869  nodes=131  features=92
+  CommandLineInterface     id=CommandLineInterface_5d1c1070  nodes=46  features=36
+  EvaluationHarness        id=EvaluationHarness_0a0a58d8  nodes=15  features=11
+
+## feature nodes on the boundaries named by the brief
+
+### src/ast-adapters.ts  (27 feature nodes)
+  initialize adapter registry_b6cce082
+    path  src/ast-adapters.ts::AstRegistry::constructor   (method)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Prepares an empty registry that indexes language AST adapters by identifier.
+  register default python adapter_d2460624
+    path  src/ast-adapters.ts::AstRegistry::constructor   (method)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Seeds the registry with the built-in Python syntax-tree adapter so Python generation works out of the box.
+  register bundled language adapters_fde9a81a
+    path  src/ast-adapters.ts::AstRegistry::constructor   (method)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Optionally loads the shipped dialect adapters so their languages are available without installation.
+  register supplied adapters_a19aaa99
+    path  src/ast-adapters.ts::AstRegistry::constructor   (method)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Adds caller-provided adapters so external languages join the same resolution surface.
+  validate adapter identity_9c4922f3
+    path  src/ast-adapters.ts::AstRegistry::register   (method)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Rejects adapters lacking a well-formed identifier so registry keys stay predictable.
+  reject duplicate adapter_cd3a0e1d
+    path  src/ast-adapters.ts::AstRegistry::register   (method)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Prevents two adapters from claiming the same identifier within one registry.
+  validate adapter extensions and languages_f1ee2eae
+    path  src/ast-adapters.ts::AstRegistry::register   (method)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Ensures declared file extensions and language names are well formed and non-empty.
+  require generation and validation capabilities_b6460a3a
+    path  src/ast-adapters.ts::AstRegistry::register   (method)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Refuses adapters that cannot both produce and verify source, since validation is mandatory before writing.
+  reject conflicting extension or language claims_4fa737a4
+    path  src/ast-adapters.ts::AstRegistry::register   (method)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Blocks adapters that would make file extension or language routing ambiguous.
+  store defensive adapter copy_4717672c
+    path  src/ast-adapters.ts::AstRegistry::register   (method)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Keeps an isolated record of the adapter so later mutation cannot alter registry behavior.
+  copy adapter definition_3a72c89e
+    path  src/ast-adapters.ts::AstRegistry::snapshot   (method)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Produces an isolated adapter record so callers cannot mutate registered state.
+  list registered adapters_01b28061
+    path  src/ast-adapters.ts::AstRegistry::list   (method)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Reports every available adapter as independent copies for inspection or reuse.
+  select adapter by target file extension_15e151d1
+    path  src/ast-adapters.ts::AstRegistry::resolve   (method)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Picks the language adapter matching the file being written when a target path is known.
+  infer adapter from task description_bfdc7421
+    path  src/ast-adapters.ts::AstRegistry::resolve   (method)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Falls back to the most recently mentioned language or extension in the task text to choose an adapter.
+  load persisted configuration from disk_9f3f8581
+    path  src/ast-adapters.ts::readConfig   (function)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Reads stored settings from the configuration file and returns an empty record when the file is absent.
+  tolerate missing or malformed configuration_37c482ea
+    path  src/ast-adapters.ts::readConfig   (function)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Falls back to empty defaults instead of failing when configuration content cannot be parsed or located.
+  reject oversized adapter entry lists_7151635f
+    path  src/ast-adapters.ts::readConfig   (function)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Refuses configurations declaring more registered language adapters than the supported maximum.
+  resolve adapter module from specifier_b9f3417b
+    path  src/ast-adapters.ts::loadAstModule   (function)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Locates an adapter implementation from a builtin name, workspace path, or installed package identifier.
+  require adapters exported by module_8ff8fcb1
+    path  src/ast-adapters.ts::loadAstModule   (function)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Rejects modules that do not expose at least one usable language adapter.
+  activate configured language adapters_2607dd96
+    path  src/ast-adapters.ts::loadInstalledAsts   (function)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Loads every configured adapter module once and yields the adapters requested by the user configuration.
+  verify requested adapter is present_19921109
+    path  src/ast-adapters.ts::loadInstalledAsts   (function)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Fails clearly when a configured adapter identifier is missing from its declaring module.
+  apply exclusive update to adapter settings_7e6b8461
+    path  src/ast-adapters.ts::updateConfig   (function)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Mutates the adapter configuration under an exclusive lock so concurrent updates cannot interleave.
+  release lock after update attempt_e953bdda
+    path  src/ast-adapters.ts::updateConfig   (function)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Always clears the guard after the update finishes, whether it succeeded or failed.
+  register new language adapter_50e49d63
+    path  src/ast-adapters.ts::installAstModule   (function)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Adds a language adapter module to the persistent configuration so later runs can synthesize that language.
+  detect conflicting language or extension claims_bc6ba28d
+    path  src/ast-adapters.ts::installAstModule   (function)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Rejects installation when a new adapter claims a language or file extension already owned by another.
+  limit total installed adapters_81bf2c2b
+    path  src/ast-adapters.ts::installAstModule   (function)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Prevents the adapter list from growing beyond the supported capacity.
+  uninstall registered language adapter_651731d2
+    path  src/ast-adapters.ts::removeAstAdapter   (function)
+    area  CodeSynthesis / manage language adapters / register dialect support / language adapter registry and installation management
+    desc  Removes a previously installed adapter from configuration and reports when the requested adapter was never registered.
+
+### src/lang/core.ts  (13 feature nodes)
+  recognize unfilled placeholder marker_2578e2e5
+    path  src/lang/core.ts::isPending   (function)
+    area  CodeSynthesis / assemble program skeleton / share dialect primitives / shared program construction across language dialects
+    desc  Identifies text that stands in for a position not yet decided.
+  assemble visible symbol table_587f0ad3
+    path  src/lang/core.ts::table   (function)
+    area  CodeSynthesis / assemble program skeleton / share dialect primitives / shared program construction across language dialects
+    desc  Flattens the enclosing scopes and language builtins into the names available at a position.
+  list names usable at position_d853b681
+    path  src/lang/core.ts::visible   (function)
+    area  CodeSynthesis / assemble program skeleton / share dialect primitives / shared program construction across language dialects
+    desc  Reports the identifiers that may legally be referenced at the current point in the program.
+  infer value type of expression_176ce175
+    path  src/lang/core.ts::typeOf   (function)
+    area  CodeSynthesis / assemble program skeleton / share dialect primitives / shared program construction across language dialects
+    desc  Determines the kind of value an expression produces so later code can use it correctly.
+  derive candidate names from objective_f932e4fd
+    path  src/lang/core.ts::vocabulary   (function)
+    area  CodeSynthesis / assemble program skeleton / share dialect primitives / shared program construction across language dialects
+    desc  Extracts identifiers, words, strings, and numbers from the stated goal to seed program construction.
+  build program through bounded decisions_c05d6bfd
+    path  src/lang/core.ts::generateProgram   (function)
+    area  CodeSynthesis / assemble program skeleton / share dialect primitives / shared program construction across language dialects
+    desc  Constructs a complete program for an objective by choosing each construct from a legal set rather than emitting text.
+  limit program depth and size_9ccb7b00
+    path  src/lang/core.ts::generateProgram   (function)
+    area  CodeSynthesis / assemble program skeleton / share dialect primitives / shared program construction across language dialects
+    desc  Caps nesting depth and statement count so generated programs stay tractable.
+  avoid repeating identical statements_c0128e94
+    path  src/lang/core.ts::generateProgram   (function)
+    area  CodeSynthesis / assemble program skeleton / share dialect primitives / shared program construction across language dialects
+    desc  Discards newly chosen statements that duplicate ones already present in the same block.
+  stream program preview during construction_380c8710
+    path  src/lang/core.ts::generateProgram   (function)
+    area  CodeSynthesis / assemble program skeleton / share dialect primitives / shared program construction across language dialects
+    desc  Publishes the partially built program so progress can be observed while it grows.
+  expose dialect as language adapter_63ac8363
+    path  src/lang/core.ts::adapterFor   (function)
+    area  CodeSynthesis / assemble program skeleton / share dialect primitives / shared program construction across language dialects
+    desc  Wraps a language definition so the rest of the system can generate and validate that language uniformly.
+  add grouping where precedence requires_17d22742
+    path  src/lang/core.ts::group   (function)
+    area  CodeSynthesis / assemble program skeleton / share dialect primitives / shared program construction across language dialects
+    desc  Wraps a subexpression in parentheses when its operator would otherwise bind incorrectly.
+  escape string for quoted literal_075f7e45
+    path  src/lang/core.ts::escapeDoubleQuoted   (function)
+    area  CodeSynthesis / assemble program skeleton / share dialect primitives / shared program construction across language dialects
+    desc  Encodes characters so a value can be embedded safely inside a quoted string.
+  detect unfinished parts of program_90cc9494
+    path  src/lang/core.ts::hasHole   (function)
+    area  CodeSynthesis / assemble program skeleton / share dialect primitives / shared program construction across language dialects
+    desc  Reports whether any position in a program subtree remains undecided.
+
+### src/lang/index.ts  (1 feature nodes)
+  list built in language adapters_1a088811
+    path  src/lang/index.ts::bundledAstAdapters   (function)
+    area  CodeSynthesis / manage language adapters / register dialect support / bundled language adapter listing
+    desc  Provides the language adapters that ship with the tool so they are available without installation.
+
+### src/lang/rust.ts  (16 feature nodes)
+  render optional type annotation_c44576d2
+    path  src/lang/rust.ts::annotate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / rust source rendering and toolchain validation
+    desc  Emits a declared type for a name when the target dialect expects explicit typing.
+  render expression as source text_d58255f0
+    path  src/lang/rust.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / rust source rendering and toolchain validation
+    desc  Converts an abstract expression into valid source text for the target language.
+  escape literal values for target language_3e79d7f4
+    path  src/lang/rust.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / rust source rendering and toolchain validation
+    desc  Emits string, numeric, and boolean literals in the form the target language accepts.
+  parenthesize nested operations correctly_964f42e4
+    path  src/lang/rust.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / rust source rendering and toolchain validation
+    desc  Adds grouping around nested operations so the rendered expression preserves the intended meaning.
+  mark unfilled expression positions_4269d042
+    path  src/lang/rust.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / rust source rendering and toolchain validation
+    desc  Emits a visible placeholder wherever an expression has not been decided yet.
+  render statement as source lines_460d20e5
+    path  src/lang/rust.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / rust source rendering and toolchain validation
+    desc  Converts an abstract statement into correctly indented source lines for the target language.
+  record declared symbols in scope_47821d04
+    path  src/lang/rust.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / rust source rendering and toolchain validation
+    desc  Registers newly introduced names so later statements can refer to them with the right types.
+  fill empty blocks with placeholder_e694f42e
+    path  src/lang/rust.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / rust source rendering and toolchain validation
+    desc  Emits a placeholder body so an empty block still forms a valid program.
+  reject constructs unsupported by language_52341516
+    path  src/lang/rust.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / rust source rendering and toolchain validation
+    desc  Fails when a statement has no faithful equivalent in the target language.
+  assemble program into complete source file_60422772
+    path  src/lang/rust.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / rust source rendering and toolchain validation
+    desc  Combines generated statements into a runnable source file for the target language.
+  hoist function definitions above entry point_60906a95
+    path  src/lang/rust.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / rust source rendering and toolchain validation
+    desc  Places function definitions before the entry point so they are declared before use.
+  emit only required supporting declarations_36b648d7
+    path  src/lang/rust.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / rust source rendering and toolchain validation
+    desc  Includes package or import declarations only when the generated program actually needs them.
+  wrap remaining statements in entry point_42ca9402
+    path  src/lang/rust.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / rust source rendering and toolchain validation
+    desc  Places top level statements inside the language's program entry point.
+  verify generated source is well formed_36724074
+    path  src/lang/rust.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / rust source rendering and toolchain validation
+    desc  Confirms that generated source parses and type checks before it is accepted or written.
+  report missing language toolchain clearly_0f76ad5c
+    path  src/lang/rust.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / rust source rendering and toolchain validation
+    desc  Explains which tool must be installed when the required checker is unavailable.
+  clean up temporary validation files_0998920f
+    path  src/lang/rust.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / rust source rendering and toolchain validation
+    desc  Removes scratch files created for checking once validation finishes.
+
+### src/lang/lua.ts  (19 feature nodes)
+  encode string literal safely_b63a6941
+    path  src/lang/lua.ts::str   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Renders a string value with the escapes the target language requires so its meaning survives.
+  coerce value to displayable text_5f97a1bc
+    path  src/lang/lua.ts::str   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Returns a usable text value and substitutes an empty one when the value is not textual.
+  prepare expression for member access_e45d1c4c
+    path  src/lang/lua.ts::prefix   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Wraps an expression when the language forbids indexing or calling it directly.
+  render expression as source text_e6c83c1b
+    path  src/lang/lua.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Converts an abstract expression into valid source text for the target language.
+  escape literal values for target language_cb7262ac
+    path  src/lang/lua.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Emits string, numeric, and boolean literals in the form the target language accepts.
+  parenthesize nested operations correctly_e2975fd0
+    path  src/lang/lua.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Adds grouping around nested operations so the rendered expression preserves the intended meaning.
+  mark unfilled expression positions_1b3f2a77
+    path  src/lang/lua.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Emits a visible placeholder wherever an expression has not been decided yet.
+  render statement as source lines_1726f102
+    path  src/lang/lua.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Converts an abstract statement into correctly indented source lines for the target language.
+  record declared symbols in scope_2e3926bb
+    path  src/lang/lua.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Registers newly introduced names so later statements can refer to them with the right types.
+  fill empty blocks with placeholder_ea99b7de
+    path  src/lang/lua.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Emits a placeholder body so an empty block still forms a valid program.
+  reject constructs unsupported by language_e0234b17
+    path  src/lang/lua.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Fails when a statement has no faithful equivalent in the target language.
+  assemble program into complete source file_ac400a65
+    path  src/lang/lua.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Combines generated statements into a runnable source file for the target language.
+  hoist function definitions above entry point_bcc1f11b
+    path  src/lang/lua.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Places function definitions before the entry point so they are declared before use.
+  emit only required supporting declarations_5b25a4b0
+    path  src/lang/lua.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Includes package or import declarations only when the generated program actually needs them.
+  wrap remaining statements in entry point_e449d277
+    path  src/lang/lua.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Places top level statements inside the language's program entry point.
+  check source acceptance by interpreter_be903247
+    path  src/lang/lua.ts::parse   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Feeds candidate source to the language interpreter and reports whether it was accepted.
+  verify generated source is well formed_8f979b3c
+    path  src/lang/lua.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Confirms that generated source parses and type checks before it is accepted or written.
+  report missing language toolchain clearly_188c8df7
+    path  src/lang/lua.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Explains which tool must be installed when the required checker is unavailable.
+  clean up temporary validation files_62526ff7
+    path  src/lang/lua.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / lua source rendering and interpreter validation
+    desc  Removes scratch files created for checking once validation finishes.
+
+### src/lang/c.ts  (22 feature nodes)
+  map value type to declared type_4e347963
+    path  src/lang/c.ts::ctype   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Chooses the target language type name corresponding to an abstract value type.
+  track required standard declarations_3b4d1ea5
+    path  src/lang/c.ts::ctype   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Notes when a chosen type obliges the emitted program to include supporting declarations.
+  format variable declaration_3bcfb4d9
+    path  src/lang/c.ts::decl   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Joins a type and an identifier into a well formed declaration.
+  render expression as source text_c7a34b96
+    path  src/lang/c.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Converts an abstract expression into valid source text for the target language.
+  escape literal values for target language_574ac01d
+    path  src/lang/c.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Emits string, numeric, and boolean literals in the form the target language accepts.
+  parenthesize nested operations correctly_9c9fdfbe
+    path  src/lang/c.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Adds grouping around nested operations so the rendered expression preserves the intended meaning.
+  mark unfilled expression positions_beb6f0e4
+    path  src/lang/c.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Emits a visible placeholder wherever an expression has not been decided yet.
+  emit output statement for value_29c9c2be
+    path  src/lang/c.ts::print   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Produces a statement that writes a value to standard output in a form matching its type.
+  render statement as source lines_ded5fbb0
+    path  src/lang/c.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Converts an abstract statement into correctly indented source lines for the target language.
+  record declared symbols in scope_22e227d3
+    path  src/lang/c.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Registers newly introduced names so later statements can refer to them with the right types.
+  fill empty blocks with placeholder_f09a2f65
+    path  src/lang/c.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Emits a placeholder body so an empty block still forms a valid program.
+  reject constructs unsupported by language_436c410e
+    path  src/lang/c.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Fails when a statement has no faithful equivalent in the target language.
+  assemble program into complete source file_79828eda
+    path  src/lang/c.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Combines generated statements into a runnable source file for the target language.
+  hoist function definitions above entry point_0540d7cf
+    path  src/lang/c.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Places function definitions before the entry point so they are declared before use.
+  emit only required supporting declarations_bc3c7b3b
+    path  src/lang/c.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Includes package or import declarations only when the generated program actually needs them.
+  wrap remaining statements in entry point_9cfee73e
+    path  src/lang/c.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Places top level statements inside the language's program entry point.
+  recognize missing executable failure_8c603cfc
+    path  src/lang/c.ts::isEnoent   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Identifies whether a failure was caused by a program being absent from the system.
+  check source with compiler_04c65fac
+    path  src/lang/c.ts::compile   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Invokes a compiler in syntax only mode and reports the diagnostics it produced.
+  abort check on cancellation_280ebad0
+    path  src/lang/c.ts::compile   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Stops the compiler invocation when the surrounding run is cancelled.
+  verify generated source is well formed_a2e877a5
+    path  src/lang/c.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Confirms that generated source parses and type checks before it is accepted or written.
+  report missing language toolchain clearly_b81cfa47
+    path  src/lang/c.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Explains which tool must be installed when the required checker is unavailable.
+  clean up temporary validation files_6fec9793
+    path  src/lang/c.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / c source rendering and compiler validation
+    desc  Removes scratch files created for checking once validation finishes.
+
+### src/lang/go.ts  (19 feature nodes)
+  map value type to language type_28f6d1c0
+    path  src/lang/go.ts::goType   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Chooses the target language type name corresponding to an abstract value type.
+  render expression as source text_438c8d01
+    path  src/lang/go.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Converts an abstract expression into valid source text for the target language.
+  escape literal values for target language_811a896f
+    path  src/lang/go.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Emits string, numeric, and boolean literals in the form the target language accepts.
+  parenthesize nested operations correctly_10f164dd
+    path  src/lang/go.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Adds grouping around nested operations so the rendered expression preserves the intended meaning.
+  mark unfilled expression positions_a1ae88df
+    path  src/lang/go.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Emits a visible placeholder wherever an expression has not been decided yet.
+  render nested statement body_dcb9049a
+    path  src/lang/go.ts::block   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Emits the statements inside a block and supplies a placeholder when the body is empty.
+  exclude nested function declarations from body_9d139c9a
+    path  src/lang/go.ts::block   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Keeps function definitions out of nested bodies where the language disallows them.
+  render statement as source lines_601d5f2b
+    path  src/lang/go.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Converts an abstract statement into correctly indented source lines for the target language.
+  record declared symbols in scope_4d93396d
+    path  src/lang/go.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Registers newly introduced names so later statements can refer to them with the right types.
+  fill empty blocks with placeholder_6fede677
+    path  src/lang/go.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Emits a placeholder body so an empty block still forms a valid program.
+  reject constructs unsupported by language_8fd5f9c7
+    path  src/lang/go.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Fails when a statement has no faithful equivalent in the target language.
+  visit every statement in tree_38c900fa
+    path  src/lang/go.ts::walk   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Traverses a program recursively so each nested statement can be inspected.
+  assemble program into complete source file_fd9bfa9b
+    path  src/lang/go.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Combines generated statements into a runnable source file for the target language.
+  hoist function definitions above entry point_17a25d85
+    path  src/lang/go.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Places function definitions before the entry point so they are declared before use.
+  emit only required supporting declarations_75462c12
+    path  src/lang/go.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Includes package or import declarations only when the generated program actually needs them.
+  wrap remaining statements in entry point_db58bc37
+    path  src/lang/go.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Places top level statements inside the language's program entry point.
+  verify generated source is well formed_fcc31783
+    path  src/lang/go.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Confirms that generated source parses and type checks before it is accepted or written.
+  report missing language toolchain clearly_aa99fc1a
+    path  src/lang/go.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Explains which tool must be installed when the required checker is unavailable.
+  clean up temporary validation files_969ee5d0
+    path  src/lang/go.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / go source rendering and toolchain validation
+    desc  Removes scratch files created for checking once validation finishes.
+
+### src/lang/javascript.ts  (9 feature nodes)
+  render optional type annotation_88f4a70b
+    path  src/lang/javascript.ts::annotate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / javascript and typescript source rendering and validation
+    desc  Emits a declared type for a name when the target dialect expects explicit typing.
+  render expression as source text_ede99d87
+    path  src/lang/javascript.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / javascript and typescript source rendering and validation
+    desc  Converts an abstract expression into valid source text for the target language.
+  escape literal values for target language_dd88fe69
+    path  src/lang/javascript.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / javascript and typescript source rendering and validation
+    desc  Emits string, numeric, and boolean literals in the form the target language accepts.
+  parenthesize nested operations correctly_fc0e8775
+    path  src/lang/javascript.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / javascript and typescript source rendering and validation
+    desc  Adds grouping around nested operations so the rendered expression preserves the intended meaning.
+  mark unfilled expression positions_133a33e3
+    path  src/lang/javascript.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / javascript and typescript source rendering and validation
+    desc  Emits a visible placeholder wherever an expression has not been decided yet.
+  build statement renderer for dialect_b8130214
+    path  src/lang/javascript.ts::renderer   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / javascript and typescript source rendering and validation
+    desc  Produces a statement rendering routine configured for a typed or untyped variant of the language.
+  verify generated source is well formed_9c5acc4c
+    path  src/lang/javascript.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / javascript and typescript source rendering and validation
+    desc  Confirms that generated source parses and type checks before it is accepted or written.
+  report missing language toolchain clearly_c8ab3e6a
+    path  src/lang/javascript.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / javascript and typescript source rendering and validation
+    desc  Explains which tool must be installed when the required checker is unavailable.
+  clean up temporary validation files_b56c3e38
+    path  src/lang/javascript.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / javascript and typescript source rendering and validation
+    desc  Removes scratch files created for checking once validation finishes.
+
+### src/lang/ruby.ts  (18 feature nodes)
+  encode string literal safely_9bf962fa
+    path  src/lang/ruby.ts::str   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Renders a string value with the escapes the target language requires so its meaning survives.
+  coerce value to displayable text_f811653f
+    path  src/lang/ruby.ts::str   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Returns a usable text value and substitutes an empty one when the value is not textual.
+  render expression as source text_79e62c30
+    path  src/lang/ruby.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Converts an abstract expression into valid source text for the target language.
+  escape literal values for target language_bc2bc30c
+    path  src/lang/ruby.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Emits string, numeric, and boolean literals in the form the target language accepts.
+  parenthesize nested operations correctly_e8b06fc6
+    path  src/lang/ruby.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Adds grouping around nested operations so the rendered expression preserves the intended meaning.
+  mark unfilled expression positions_7cd29233
+    path  src/lang/ruby.ts::expr   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Emits a visible placeholder wherever an expression has not been decided yet.
+  render statement as source lines_40bfc293
+    path  src/lang/ruby.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Converts an abstract statement into correctly indented source lines for the target language.
+  record declared symbols in scope_b1816c06
+    path  src/lang/ruby.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Registers newly introduced names so later statements can refer to them with the right types.
+  fill empty blocks with placeholder_51c81811
+    path  src/lang/ruby.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Emits a placeholder body so an empty block still forms a valid program.
+  reject constructs unsupported by language_fcd49c13
+    path  src/lang/ruby.ts::stmt   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Fails when a statement has no faithful equivalent in the target language.
+  assemble program into complete source file_f0a1f17c
+    path  src/lang/ruby.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Combines generated statements into a runnable source file for the target language.
+  hoist function definitions above entry point_5681ecc1
+    path  src/lang/ruby.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Places function definitions before the entry point so they are declared before use.
+  emit only required supporting declarations_44bb8aa2
+    path  src/lang/ruby.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Includes package or import declarations only when the generated program actually needs them.
+  wrap remaining statements in entry point_185c34b0
+    path  src/lang/ruby.ts::render   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Places top level statements inside the language's program entry point.
+  verify source with language checker_4b1c7e34
+    path  src/lang/ruby.ts::check   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Runs the language's syntax checker over a file and reports whether it passed.
+  verify generated source is well formed_843f50bd
+    path  src/lang/ruby.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Confirms that generated source parses and type checks before it is accepted or written.
+  report missing language toolchain clearly_ceb93113
+    path  src/lang/ruby.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Explains which tool must be installed when the required checker is unavailable.
+  clean up temporary validation files_6e6cf59f
+    path  src/lang/ruby.ts::validate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / ruby source rendering and checker validation
+    desc  Removes scratch files created for checking once validation finishes.
+
+### src/python-ast.ts  (23 feature nodes)
+  construct syntax tree node_c70a8142
+    path  src/python-ast.ts::node   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Builds a node of the target language syntax tree with the supplied fields.
+  construct identifier reference_f0c060f5
+    path  src/python-ast.ts::name   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Builds a reference to a named symbol within the generated program.
+  collect defined names with signatures_f6c33c86
+    path  src/python-ast.ts::symbolTable   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Gathers the functions and variables defined so far together with the information needed to call them.
+  list names usable at position_c0078db5
+    path  src/python-ast.ts::visible   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Reports the identifiers that may legally be referenced at the current point in the program.
+  render partially built program_f490335e
+    path  src/python-ast.ts::previewTree   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Produces displayable source for a program that still contains undecided positions.
+  exchange structured request with interpreter_14e31a82
+    path  src/python-ast.ts::runPythonJson   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Sends a structured request to an isolated interpreter process and returns its structured reply.
+  bound interpreter response size_6cd659ee
+    path  src/python-ast.ts::runPythonJson   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Limits how much the helper process may return and terminates it when the limit is exceeded.
+  convert syntax tree to source_c80850ef
+    path  src/python-ast.ts::unparsePython   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Turns an abstract program tree into formatted source text.
+  verify program source compiles_d69833fa
+    path  src/python-ast.ts::validatePythonSource   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Confirms that generated source is syntactically valid before it is written or executed.
+  interpret multi file project description_2d53225d
+    path  src/python-ast.ts::parseManifest   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Turns a project description into a mapping of destination paths to file contents.
+  reject paths outside declared project_7c3ad151
+    path  src/python-ast.ts::parseManifest   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Refuses manifests whose destinations fall outside the intended project location.
+  verify multi file project compiles_291b07be
+    path  src/python-ast.ts::validatePythonProject   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Compiles every file of a generated project together to confirm the project is well formed.
+  screen candidate body for defects_bcb8ebc2
+    path  src/python-ast.ts::checkCandidate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Rejects candidate code that fails to compile, references unknown names, calls peers wrongly, or omits a required result.
+  avoid executing untrusted candidate code_0fc602c5
+    path  src/python-ast.ts::checkCandidate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Assesses candidates statically so generated code never runs during screening.
+  derive candidate names from objective_586bcfa3
+    path  src/python-ast.ts::vocabulary   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Extracts identifiers, words, strings, and numbers from the stated goal to seed program construction.
+  build function body through bounded decisions_ce7b4c1f
+    path  src/python-ast.ts::createBuilder   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Constructs the statements of one function by choosing each construct from a legal set.
+  keep decision context within budget_4519a285
+    path  src/python-ast.ts::createBuilder   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Trims the supporting material for each choice so requests remain within the allowed size.
+  construct function definition node_d5c60bdb
+    path  src/python-ast.ts::functionDef   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Assembles a function definition with its parameters and body for the generated program.
+  synthesize program from objective_95e6448b
+    path  src/python-ast.ts::generate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Produces a complete program for a stated goal by planning its structure, filling each part, and assembling the result.
+  fill independent program parts concurrently_4ad7e28a
+    path  src/python-ast.ts::generate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Builds separate functions at the same time to shorten overall construction time.
+  emit single file or project layout_5c027112
+    path  src/python-ast.ts::generate   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Returns either one source file or a multi file project depending on the requested shape.
+  synthesize single source file_997e559e
+    path  src/python-ast.ts::generatePythonAst   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Produces one validated source file satisfying a stated objective.
+  synthesize multi file project_4a981d61
+    path  src/python-ast.ts::generatePythonProject   (function)
+    area  CodeSynthesis / render dialect source / verify with toolchain / python syntax tree construction and program synthesis
+    desc  Produces a package of related source files satisfying a stated objective.
+
+### src/python-units.ts  (15 feature nodes)
+  construct module import statement_3e5135e6
+    path  src/python-units.ts::importFrom   (function)
+    area  CodeSynthesis / decompose objective into units / plan function boundaries / program decomposition into functions and modules
+    desc  Builds an import bringing named symbols from one module into another.
+  recognize import statement_ada08dc0
+    path  src/python-units.ts::isImport   (function)
+    area  CodeSynthesis / decompose objective into units / plan function boundaries / program decomposition into functions and modules
+    desc  Identifies whether a statement brings symbols in from another module.
+  tally program constructs_3fab15c9
+    path  src/python-units.ts::counts   (function)
+    area  CodeSynthesis / decompose objective into units / plan function boundaries / program decomposition into functions and modules
+    desc  Summarizes how many of each kind of construct a program contains.
+  choose project package and module names_773a90a5
+    path  src/python-units.ts::decomposeLayout   (function)
+    area  CodeSynthesis / decompose objective into units / plan function boundaries / program decomposition into functions and modules
+    desc  Decides how a generated project is divided into a package and its constituent modules.
+  plan functions needed for objective_77baf778
+    path  src/python-units.ts::decompose   (function)
+    area  CodeSynthesis / decompose objective into units / plan function boundaries / program decomposition into functions and modules
+    desc  Decides how many functions a solution needs and what each one is named, takes, and accomplishes.
+  assign functions to owning modules_c09171b1
+    path  src/python-units.ts::decompose   (function)
+    area  CodeSynthesis / decompose objective into units / plan function boundaries / program decomposition into functions and modules
+    desc  Places each planned function in the module where it belongs.
+  identify program entry function_43325b8c
+    path  src/python-units.ts::isEntry   (function)
+    area  CodeSynthesis / decompose objective into units / plan function boundaries / program decomposition into functions and modules
+    desc  Determines whether a planned function is the one the program starts from.
+  identify callable sibling functions_e90c25a3
+    path  src/python-units.ts::peersOf   (function)
+    area  CodeSynthesis / decompose objective into units / plan function boundaries / program decomposition into functions and modules
+    desc  Reports the other planned functions a given function may call.
+  implement planned functions concurrently_e3f83054
+    path  src/python-units.ts::fillUnits   (function)
+    area  CodeSynthesis / decompose objective into units / plan function boundaries / program decomposition into functions and modules
+    desc  Builds the body of every planned function at once, optionally searching alternatives for each.
+  abandon remaining work on failure_a9ba1cb4
+    path  src/python-units.ts::fillUnits   (function)
+    area  CodeSynthesis / decompose objective into units / plan function boundaries / program decomposition into functions and modules
+    desc  Stops all in flight function construction as soon as one function cannot be completed.
+  combine parts into single program_bbd98ffa
+    path  src/python-units.ts::assemble   (function)
+    area  CodeSynthesis / decompose objective into units / plan function boundaries / program decomposition into functions and modules
+    desc  Orders imports, function definitions, and entry statements into one coherent program.
+  collect functions invoked within body_9cec4e66
+    path  src/python-units.ts::calledUnits   (function)
+    area  CodeSynthesis / decompose objective into units / plan function boundaries / program decomposition into functions and modules
+    desc  Reports which planned functions a given block of code calls.
+  declare dependencies between modules_43c21437
+    path  src/python-units.ts::crossImports   (function)
+    area  CodeSynthesis / decompose objective into units / plan function boundaries / program decomposition into functions and modules
+    desc  Emits the imports a module needs to reach functions defined in sibling modules.
+  lay out project files for package_b614b088
+    path  src/python-units.ts::assembleProject   (function)
+    area  CodeSynthesis / decompose objective into units / plan function boundaries / program decomposition into functions and modules
+    desc  Produces the package initializer, module files, and runnable entry file of a generated project.
+  guard entry statements behind direct execution_d464b2ea
+    path  src/python-units.ts::assembleProject   (function)
+    area  CodeSynthesis / decompose objective into units / plan function boundaries / program decomposition into functions and modules
+    desc  Ensures entry point statements run only when the program is started directly.
+
+### src/python-search.ts  (5 feature nodes)
+  detect whether function must yield result_1a18db83
+    path  src/python-search.ts::wantsReturn   (function)
+    area  CodeSynthesis / search implementation variants / rank candidate solutions / alternative function implementation search and ranking
+    desc  Determines from a function's stated purpose whether it is expected to produce a value.
+  search alternative implementations of function_4ed11d7b
+    path  src/python-search.ts::searchUnit   (function)
+    area  CodeSynthesis / search implementation variants / rank candidate solutions / alternative function implementation search and ranking
+    desc  Explores several independent implementations of one function and keeps the strongest.
+  prune candidates failing static checks_b7ba49b9
+    path  src/python-search.ts::searchUnit   (function)
+    area  CodeSynthesis / search implementation variants / rank candidate solutions / alternative function implementation search and ranking
+    desc  Discards implementations that fail correctness screening before they are ranked.
+  rank candidates against quality criteria_0b79768f
+    path  src/python-search.ts::searchUnit   (function)
+    area  CodeSynthesis / search implementation variants / rank candidate solutions / alternative function implementation search and ranking
+    desc  Scores surviving implementations against stated criteria to pick the best one.
+  report each candidate outcome_eb9cd3a3
+    path  src/python-search.ts::searchUnit   (function)
+    area  CodeSynthesis / search implementation variants / rank candidate solutions / alternative function implementation search and ranking
+    desc  Announces whether each explored implementation was kept or dropped.
+
+### src/provider.ts  (2 feature nodes)
+  request decision answers from model_f8aff1b7
+    path  src/provider.ts::JevProvider::decide   (method)
+    area  ModelDecisionGateway / deliver decision requests / carry cancellation signals / decision request delivery to model service
+    desc  Submits the state and bounded questions to the decision model and returns its answers.
+  propagate cancellation signal_115a8dcc
+    path  src/provider.ts::JevProvider::decide   (method)
+    area  ModelDecisionGateway / deliver decision requests / carry cancellation signals / decision request delivery to model service
+    desc  Forwards caller cancellation so in-flight requests stop promptly.
+
+### src/decide.ts  (11 feature nodes)
+  reduce input to fit budget_559d6661
+    path  src/decide.ts::shrinkText   (function)
+    area  CommandLineInterface / answer questions from input stream / enforce allowed choices / question answering command line filter
+    desc  Progressively shortens supplied text so a request stays within the allowed context size.
+  interpret choice labels from argument_a950e58f
+    path  src/decide.ts::parseLabels   (function)
+    area  CommandLineInterface / answer questions from input stream / enforce allowed choices / question answering command line filter
+    desc  Turns a user supplied list of option labels into individual choices.
+  enforce valid choice set_6577ff5c
+    path  src/decide.ts::validateLabels   (function)
+    area  CommandLineInterface / answer questions from input stream / enforce allowed choices / question answering command line filter
+    desc  Rejects option sets that are empty, contain duplicates, or fall outside the supported count range.
+  interpret confidence threshold argument_6dc91454
+    path  src/decide.ts::parseThreshold   (function)
+    area  CommandLineInterface / answer questions from input stream / enforce allowed choices / question answering command line filter
+    desc  Converts a supplied threshold into a probability and rejects values outside the valid range.
+  interpret batch question specification_1d3c2cb6
+    path  src/decide.ts::parseSpec   (function)
+    area  CommandLineInterface / answer questions from input stream / enforce allowed choices / question answering command line filter
+    desc  Turns a declared list of questions into structured requests and requires each to ask exactly one kind of question.
+  expose decision capabilities to caller_1d1ba7ae
+    path  src/decide.ts::asker   (function)
+    area  CommandLineInterface / answer questions from input stream / enforce allowed choices / question answering command line filter
+    desc  Wraps the decision service so callers can request a choice, a probability, or a score while capturing the outcome.
+  format number for display_d8245392
+    path  src/decide.ts::fixed   (function)
+    area  CommandLineInterface / answer questions from input stream / enforce allowed choices / question answering command line filter
+    desc  Renders a numeric value with a consistent fixed precision for reporting.
+  answer question as command line filter_c5b321dc
+    path  src/decide.ts::runDecide   (function)
+    area  CommandLineInterface / answer questions from input stream / enforce allowed choices / question answering command line filter
+    desc  Turns text on standard input into a bounded decision usable in scripts and pipelines.
+  select answering mode from flags_03f2fcf6
+    path  src/decide.ts::runDecide   (function)
+    area  CommandLineInterface / answer questions from input stream / enforce allowed choices / question answering command line filter
+    desc  Chooses between labelled choice, yes or no, scoring, ranking, or batch modes and rejects conflicting requests.
+  fit question within context budget_ef5144d5
+    path  src/decide.ts::runDecide   (function)
+    area  CommandLineInterface / answer questions from input stream / enforce allowed choices / question answering command line filter
+    desc  Trims optional parts of the question so the request stays within the allowed size.
+  signal decision outcome through exit status_43cbf491
+    path  src/decide.ts::runDecide   (function)
+    area  CommandLineInterface / answer questions from input stream / enforce allowed choices / question answering command line filter
+    desc  Encodes the selected option, confidence verdict, or failure into the process exit code.
+
+### src/generation.ts  (8 feature nodes)
+  collect vocabulary from observations_7ee019eb
+    path  src/generation.ts::fragmentsFrom   (function)
+    area  AgentOrchestration / generate tool invocations / validate argument payloads / tool argument generation and validation
+    desc  Gathers bounded excerpts of prior observations to seed the symbols available to generation.
+  report syntax problems in generated code_fd7b15eb
+    path  src/generation.ts::syntaxFeedback   (function)
+    area  AgentOrchestration / generate tool invocations / validate argument payloads / tool argument generation and validation
+    desc  Summarizes the first few syntax errors found in generated source so generation can correct itself.
+  produce tool argument value_210ac0b2
+    path  src/generation.ts::generateText   (function)
+    area  AgentOrchestration / generate tool invocations / validate argument payloads / tool argument generation and validation
+    desc  Creates the textual value a tool needs by routing to the most structured generator that fits the target.
+  route generation to language builder_fb270475
+    path  src/generation.ts::generateText   (function)
+    area  AgentOrchestration / generate tool invocations / validate argument payloads / tool argument generation and validation
+    desc  Selects the grammar directed builder matching the target language or command rather than decoding raw characters.
+  enforce validity of generated content_1e0a7e01
+    path  src/generation.ts::generateText   (function)
+    area  AgentOrchestration / generate tool invocations / validate argument payloads / tool argument generation and validation
+    desc  Requires generated source to pass its language check and to stay within size limits before it is accepted.
+  compose complete tool invocation_ff68e4e1
+    path  src/generation.ts::generateArguments   (function)
+    area  AgentOrchestration / generate tool invocations / validate argument payloads / tool argument generation and validation
+    desc  Produces every argument a selected tool requires, building independent fields concurrently.
+  abandon generation on first failure_c752b883
+    path  src/generation.ts::generateArguments   (function)
+    area  AgentOrchestration / generate tool invocations / validate argument payloads / tool argument generation and validation
+    desc  Stops all in flight field generation as soon as one field cannot be produced.
+  regenerate content when target changes_a9d11cae
+    path  src/generation.ts::generateArguments   (function)
+    area  AgentOrchestration / generate tool invocations / validate argument payloads / tool argument generation and validation
+    desc  Rebuilds file content when the chosen destination implies a different language or when errors appear.
+
+### src/decisions.ts  (14 feature nodes)
+  report consumed decision requests_4865692f
+    path  src/decisions.ts::Decisions::requests   (method)
+    area  DecisionSdk / request decisions / track consumed budget / decision request facade with budget tracking
+    desc  Exposes how many model requests the run has spent so far.
+  check request budget exhaustion_22a15231
+    path  src/decisions.ts::Decisions::exhausted   (method)
+    area  DecisionSdk / request decisions / track consumed budget / decision request facade with budget tracking
+    desc  Indicates whether the run has consumed its entire allowance of model requests.
+  report token usage totals_148d5245
+    path  src/decisions.ts::Decisions::usage   (method)
+    area  DecisionSdk / request decisions / track consumed budget / decision request facade with budget tracking
+    desc  Exposes accumulated input and output token consumption for the run.
+  derive child decision facade_1fb12e3b
+    path  src/decisions.ts::Decisions::fork   (method)
+    area  DecisionSdk / request decisions / track consumed budget / decision request facade with budget tracking
+    desc  Creates a linked decision facade bound to a narrower cancellation scope while sharing the run budget.
+  verify remaining request budget_2f6994d7
+    path  src/decisions.ts::Decisions::assertRequestBudget   (method)
+    area  DecisionSdk / request decisions / track consumed budget / decision request facade with budget tracking
+    desc  Confirms enough model requests remain before committing to further work.
+  translate budget exhaustion error_cb47edd1
+    path  src/decisions.ts::Decisions::assertRequestBudget   (method)
+    area  DecisionSdk / request decisions / track consumed budget / decision request facade with budget tracking
+    desc  Reports budget depletion with the configured request limit for clearer diagnostics.
+  select option from candidates_052c6186
+    path  src/decisions.ts::Decisions::choose   (method)
+    area  DecisionSdk / request decisions / track consumed budget / decision request facade with budget tracking
+    desc  Asks the model to pick a single labelled candidate that best fits the current state.
+  estimate statement probability_81bf005a
+    path  src/decisions.ts::Decisions::probability   (method)
+    area  DecisionSdk / request decisions / track consumed budget / decision request facade with budget tracking
+    desc  Obtains the model's likelihood that a stated condition holds for the current state.
+  rate state against rubric levels_48887ab5
+    path  src/decisions.ts::Decisions::score   (method)
+    area  DecisionSdk / request decisions / track consumed budget / decision request facade with budget tracking
+    desc  Obtains an expected score and level distribution for the state under an ordered rubric.
+  select choices for parallel positions_f32d41cc
+    path  src/decisions.ts::Decisions::chooseMany   (method)
+    area  DecisionSdk / request decisions / track consumed budget / decision request facade with budget tracking
+    desc  Resolves many independent labelled selections in a single batched decision.
+  split oversized batch requests_91c3df1e
+    path  src/decisions.ts::Decisions::chooseMany   (method)
+    area  DecisionSdk / request decisions / track consumed budget / decision request facade with budget tracking
+    desc  Recursively halves an overlarge question batch so the request fits the model budget.
+  prepare value for transport_817d22d1
+    path  src/decisions.ts::projectJson   (function)
+    area  DecisionSdk / request decisions / track consumed budget / decision request facade with budget tracking
+    desc  Converts an arbitrary value into a transferable form while dropping absent fields and tolerating repeated references.
+  expose run state to callers_bc240438
+    path  src/decisions.ts::jsonState   (function)
+    area  DecisionSdk / request decisions / track consumed budget / decision request facade with budget tracking
+    desc  Produces the externally visible projection of internal run state for strict consumers.
+  identify decision within run_99176b0f
+    path  src/decisions.ts::identity   (function)
+    area  DecisionSdk / request decisions / track consumed budget / decision request facade with budget tracking
+    desc  Extracts the naming attributes that distinguish one decision from another during a run.
+
+### src/tools.ts  (16 feature nodes)
+  read required text argument_b4bc172b
+    path  src/tools.ts::text   (function)
+    area  AgentOrchestration / provide builtin capabilities / act on files and commands / built in agent tool implementations for files and commands
+    desc  Retrieves a tool argument as text and rejects values that are not textual.
+  read required numeric argument_32b9674a
+    path  src/tools.ts::number   (function)
+    area  AgentOrchestration / provide builtin capabilities / act on files and commands / built in agent tool implementations for files and commands
+    desc  Retrieves a tool argument as a number and rejects values that are not numeric.
+  remove file ignoring absence_fa9921af
+    path  src/tools.ts::unlinkQuiet   (function)
+    area  AgentOrchestration / provide builtin capabilities / act on files and commands / built in agent tool implementations for files and commands
+    desc  Deletes a file without failing when it is already gone.
+  prepare file change for commit_832146f8
+    path  src/tools.ts::stage   (function)
+    area  AgentOrchestration / provide builtin capabilities / act on files and commands / built in agent tool implementations for files and commands
+    desc  Stages new file contents beside the target with a backup so the change can be committed or undone.
+  preserve original file permissions_2b81a8f1
+    path  src/tools.ts::stage   (function)
+    area  AgentOrchestration / provide builtin capabilities / act on files and commands / built in agent tool implementations for files and commands
+    desc  Keeps the existing access mode when replacing a file's contents.
+  replace file contents indivisibly_6b0757a2
+    path  src/tools.ts::atomicWrite   (function)
+    area  AgentOrchestration / provide builtin capabilities / act on files and commands / built in agent tool implementations for files and commands
+    desc  Writes new file contents so readers never observe a partially written file.
+  apply multi file change as unit_c0bcf83d
+    path  src/tools.ts::atomicWriteAll   (function)
+    area  AgentOrchestration / provide builtin capabilities / act on files and commands / built in agent tool implementations for files and commands
+    desc  Writes several files so either all of them change or none do.
+  roll back partial multi file change_d705e2ff
+    path  src/tools.ts::atomicWriteAll   (function)
+    area  AgentOrchestration / provide builtin capabilities / act on files and commands / built in agent tool implementations for files and commands
+    desc  Restores every touched file to its prior contents when any write in the set fails.
+  execute command in isolated process group_a359b6a8
+    path  src/tools.ts::runBash   (function)
+    area  AgentOrchestration / provide builtin capabilities / act on files and commands / built in agent tool implementations for files and commands
+    desc  Runs a shell command as a separate process group so it and its children can be controlled together.
+  terminate command exceeding time limit_74f0a20f
+    path  src/tools.ts::runBash   (function)
+    area  AgentOrchestration / provide builtin capabilities / act on files and commands / built in agent tool implementations for files and commands
+    desc  Stops a command that runs too long, escalating from a polite signal to a forced stop.
+  bound and stream command output_d59a305f
+    path  src/tools.ts::runBash   (function)
+    area  AgentOrchestration / provide builtin capabilities / act on files and commands / built in agent tool implementations for files and commands
+    desc  Streams command output to the caller while capping how much is retained.
+  withhold credentials from command environment_48997807
+    path  src/tools.ts::runBash   (function)
+    area  AgentOrchestration / provide builtin capabilities / act on files and commands / built in agent tool implementations for files and commands
+    desc  Runs commands without access credentials in their environment so secrets do not leak.
+  identify inherently safe actions_95d2c13e
+    path  src/tools.ts::autoApproved   (function)
+    area  AgentOrchestration / provide builtin capabilities / act on files and commands / built in agent tool implementations for files and commands
+    desc  Determines which tool actions may proceed without asking the operator for permission.
+  provide standard agent capabilities_d855af10
+    path  src/tools.ts::builtInTools   (function)
+    area  AgentOrchestration / provide builtin capabilities / act on files and commands / built in agent tool implementations for files and commands
+    desc  Defines the file inspection, editing, command execution, and planning capabilities available to the agent.
+  declare argument requirements per capability_fa54edd8
+    path  src/tools.ts::builtInTools   (function)
+    area  AgentOrchestration / provide builtin capabilities / act on files and commands / built in agent tool implementations for files and commands
+    desc  Specifies what each capability expects so arguments can be generated and checked.
+  describe workspace state to agent_36cd598d
+    path  src/tools.ts::toolContext   (function)
+    area  AgentOrchestration / provide builtin capabilities / act on files and commands / built in agent tool implementations for files and commands
+    desc  Summarizes the working directory and available capabilities so the agent can decide what to do next.
+
+### src/harness.ts  (33 feature nodes)
+  initialize agent run configuration_ee030f2d
+    path  src/harness.ts::Harness::constructor   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Prepares the agent with its workspace provider and decoding options for subsequent runs.
+  validate budget and decoding limits_1b00f9e7
+    path  src/harness.ts::Harness::constructor   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Rejects out-of-range turn request step time concurrency and threshold settings before any run starts.
+  build ast adapter registry_964d18fd
+    path  src/harness.ts::Harness::constructor   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Assembles the language adapters available for grammar-directed file generation.
+  register initial tool set_e97ba109
+    path  src/harness.ts::Harness::constructor   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Installs the supplied or built-in tools that the agent may invoke.
+  register executable tool_7270251c
+    path  src/harness.ts::Harness::registerTool   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Adds a tool to the agent's action inventory so it can be selected during a run.
+  validate tool name and effect_3a5b5133
+    path  src/harness.ts::Harness::registerTool   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Rejects malformed duplicate or reserved tool names and unsupported effect classes.
+  validate tool field schema_2013b2fa
+    path  src/harness.ts::Harness::registerTool   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Ensures each declared argument has a usable type description and bounds before the tool is offered.
+  enforce tool registry capacity_7a8cb098
+    path  src/harness.ts::Harness::registerTool   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Caps the inventory so the action choice stays within the model's selection limits.
+  reject registration during active run_b22d6039
+    path  src/harness.ts::Harness::registerTool   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Keeps the tool inventory stable while a run is executing.
+  register language ast adapter_ae2ed370
+    path  src/harness.ts::Harness::registerAst   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Adds a syntax-tree adapter so its language becomes available to generation.
+  reject adapter changes during run_a5ceba7f
+    path  src/harness.ts::Harness::registerAst   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Blocks adapter registration while a run is in progress to keep generation stable.
+  queue user instruction for next turn_6366d1c5
+    path  src/harness.ts::Harness::enqueue   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Accepts new guidance that becomes visible to the agent at the next action boundary.
+  validate instruction length_adf84cfe
+    path  src/harness.ts::Harness::enqueue   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Rejects empty or oversized instructions before they enter the queue.
+  record host executed command result_70032aa9
+    path  src/harness.ts::Harness::observe   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Preserves outcomes of commands the interactive host ran so the agent can see them.
+  bound retained observation history_e5adda21
+    path  src/harness.ts::Harness::observe   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Keeps only the most recent host observations to limit context growth.
+  reject observation during active run_24d3af24
+    path  src/harness.ts::Harness::observe   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Requires host observations to be recorded between runs rather than mid-execution.
+  clear session history_24885a87
+    path  src/harness.ts::Harness::reset   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Discards conversation observations and queued instructions to start a fresh session.
+  reject reset during active run_536cf9d8
+    path  src/harness.ts::Harness::reset   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Requires an active run to be cancelled before session state is cleared.
+  execute agent turn loop_70c8ec8e
+    path  src/harness.ts::Harness::run   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Drives the task to completion by repeatedly selecting an action and applying its result.
+  enforce run time and turn budgets_d4b82e4b
+    path  src/harness.ts::Harness::run   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Aborts the run when its time allowance or turn allowance is spent.
+  journal run events_5cecc966
+    path  src/harness.ts::Harness::run   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Persists every run event to a durable per-run log for later replay.
+  assemble decision state for turn_603e513c
+    path  src/harness.ts::Harness::run   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Builds the workspace task tool and history view the model uses to pick the next action.
+  route next action selection_b964b77d
+    path  src/harness.ts::Harness::run   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Presents the available tools plus finish and blocked as a bounded choice for the model.
+  suppress unproductive repeated actions_b3dcfe57
+    path  src/harness.ts::Harness::run   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Withdraws tools that repeated identical reads writes or failures to push the run toward progress.
+  generate tool arguments_5530a0f2
+    path  src/harness.ts::Harness::run   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Derives validated arguments for the selected tool from the current state.
+  authorize tool execution_6e0d54a7
+    path  src/harness.ts::Harness::run   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Defers to the host for approval before running a tool with side effects.
+  execute tool and record outcome_45b4492e
+    path  src/harness.ts::Harness::run   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Runs the chosen tool and appends its observed result to the run record.
+  verify completion claim_a31e900e
+    path  src/harness.ts::Harness::run   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Independently judges whether the requested work and its verification actually succeeded before ending the run.
+  apply pending user instructions_8fd7541f
+    path  src/harness.ts::Harness::run   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Folds newly queued guidance into the task before continuing or finishing.
+  classify terminal run status_6488a5d0
+    path  src/harness.ts::Harness::run   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Resolves the run as completed blocked limited cancelled or failed with a summary.
+  measure per turn timings_3e4bf725
+    path  src/harness.ts::Harness::run   (method)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Records duration and request consumption for each turn to support performance reporting.
+  shorten text for record keeping_faed48ee
+    path  src/harness.ts::trim   (function)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Clips long text to a bounded length and notes how much was left out.
+  bound recorded tool arguments_721d91f6
+    path  src/harness.ts::boundedArgs   (function)
+    area  AgentOrchestration / drive agent turns / sequence tool execution / agent run loop and tool orchestration
+    desc  Limits the size of argument values stored in run records so journals stay manageable.

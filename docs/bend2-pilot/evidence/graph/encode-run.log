@@ -1,0 +1,314 @@
+RPGParser[jev-code] - INFO - Initializing RPGParser: dir=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code, name=jev-code
+RPGParser[jev-code] - INFO - Skeleton loaded: files=59
+RPGParser[jev-code] - INFO - === RPG parsing pipeline started ===
+RPGParser[jev-code] - INFO - Params: repo_info_iters=3, exclude_votes=1, parse_iters=5, min_batch=10000, max_batch=50000, class_ctx=10, func_ctx=10, workers=1, refactor_ctx=10, refactor_iters=5
+RPGParser[jev-code] - INFO - Generating repo info (max_iters=3)...
+RPGParser[jev-code] - INFO - README found: README.md (length=13137)
+RPGParser[jev-code] - INFO - GENERATE_REPO_INFO user prompt:
+Repository Name:
+<repo_name>
+jev-code
+</repo_name>
+Repository Structure:
+<skeleton>
+README.md
+install.sh
+package.json
+pnpm-lock.yaml
+tsconfig.json
+tsconfig.test.json
+assets/jev-code-logo.png
+docs/guide.md
+docs/sdk.md
+docs/brainstorms/2026-09-19-typed-decision-program-sdk-requirements.md
+docs/media/session.cast
+docs/media/session.gif
+docs/plans/2026-09-18-001-feat-generation-power-plan.md
+docs/plans/2026-09-18-002-feat-harness-ux-plan.md
+docs/plans/2026-09-19-002-feat-typed-decision-sdk-plan.md
+e
+RPGParser[jev-code] - INFO - LLM call for repo info, iter=1...
+RPGParser[jev-code] - INFO - Iter 1 Response: <solution>
+```
+Repository Overview: jev-code
+
+1. Project Purpose & Domain
+---------------------------
+`jev-code` (package `jev-code`, v0.2.0, ESM/TypeScript) is a decision-driven programming toolkit built around "Jev," a decision-only model served by typesafe.ai. Unlike text-generating coding assistants, Jev never emits free-form prose or code strings: it selects one option from a bounded list, returns a probability for a statement, or scores input against a rubric. The repository's central thes
+RPGParser[jev-code] - INFO - Repo info received (len=9984) in iter=1.
+RPGParser[jev-code] - INFO - Excluding irrelevant files (max_votes=1)...
+RPGParser[jev-code] - INFO - EXCLUDE_FILES user prompt:
+Repository Name:
+<readme>
+jev-code
+</readme>
+Repository Structure:
+<skeleton>
+README.md
+install.sh
+package.json
+pnpm-lock.yaml
+tsconfig.json
+tsconfig.test.json
+assets/jev-code-logo.png
+docs/guide.md
+docs/sdk.md
+docs/brainstorms/2026-09-19-typed-decision-program-sdk-requirements.md
+docs/media/session.cast
+docs/media/session.gif
+docs/plans/2026-09-18-001-feat-generation-power-plan.md
+docs/plans/2026-09-18-002-feat-harness-ux-plan.md
+docs/plans/2026-09-19-002-feat-typed-decision-sdk-plan.md
+eval/fi
+RPGParser[jev-code] - INFO - LLM vote #1 for exclude list...
+RPGParser[jev-code] - INFO - Iter 1 Response: Checked the tree. `docs/`, `examples/`, `eval/`, and `test/` are the only areas that are clearly non-core: prose/plans/media, sample programs, benchmark task suites with their checkers, and the test suite plus fixtures. Everything under `src/` (including `src/eval.ts`, `src/lang/`, `src/sdk/`, `src/ui/`) is core, and `install.sh` is kept as install infrastructure. `assets/` holds only a logo image with no source files, so it falls outside scope.
+
+One note: the directory listings came back with t
+RPGParser[jev-code] - INFO - Vote #1 candidates: 4 (after existence check).
+RPGParser[jev-code] - INFO - Total raw candidates across votes: 4
+RPGParser[jev-code] - INFO - Single-vote exclude list size: 4 (consolidation skipped)
+RPGParser[jev-code] - INFO - Excluded paths decided: 6
+RPGParser[jev-code] - INFO - Parsing features...
+RPGParser[jev-code] - INFO - Total valid source files to parse: 54
+RPGParser[jev-code] - INFO - [GLOBAL] Total class groups: 17, function groups: 248
+RPGParser[jev-code] - INFO - [GLOBAL] kind=class, groups=17, batches=1, min_batch_tokens=10000, max_batch_tokens=50000
+RPGParser[jev-code] - INFO - [GLOBAL] class batch #0: units=78, tokens=22033, classes=['AstRegistry', 'Decisions', 'Harness', 'JevProvider', 'DecisionSession', 'ProgramInvalidError', 'ProgramDefinitionError', 'EventObserverError', 'Program', 'RunResources', 'Router', 'TreeDefinitionError', 'TreeSlot', 'DecisionError', 'CancelledError', 'LimitError', 'ResourceExhaustedError']
+RPGParser[jev-code] - INFO - [GLOBAL] function last batch tokens=6294 < min_batch_tokens=10000, merging with previous batch.
+RPGParser[jev-code] - INFO - [GLOBAL] kind=function, groups=248, batches=1, min_batch_tokens=10000, max_batch_tokens=50000
+RPGParser[jev-code] - INFO - [GLOBAL] function batch #0: units=248, tokens=56286, functions=['readConfig', 'loadAstModule', 'loadInstalledAsts', 'updateConfig', 'installAstModule', 'removeAstAdapter', 'quote', 'renderBashAst', 'validateBashSource', 'generateBashAst', 'stdinText', 'replay', 'ignoreEpipe', 'readStdin', 'ensureApiKey', 'login', 'logout', 'main', 'configDir', 'configPath']
+RPGParser[jev-code] - INFO - [GLOBAL] process_class_batch: classes=['AstRegistry', 'Decisions', 'Harness', 'JevProvider', 'DecisionSession', 'ProgramInvalidError', 'ProgramDefinitionError', 'EventObserverError', 'Program', 'RunResources', 'Router', 'TreeDefinitionError', 'TreeSlot', 'DecisionError', 'CancelledError', 'LimitError', 'ResourceExhaustedError'], units=78
+RPGParser[jev-code] - INFO - Response: I've read all ten files. Here is the extraction.
+
+<solution>
+{
+  "AstRegistry": {
+    "constructor": {
+      "initialize adapter registry": "Prepares an empty registry that indexes language AST adapters by identifier.",
+      "register default python adapter": "Seeds the registry with the built-in P
+RPGParser[jev-code] - INFO - [GLOBAL] finished class batch with 78 units
+RPGParser[jev-code] - INFO - [GLOBAL] process_func_batch: functions=['readConfig', 'loadAstModule', 'loadInstalledAsts', 'updateConfig', 'installAstModule', 'removeAstAdapter', 'quote', 'renderBashAst', 'validateBashSource', 'generateBashAst', 'stdinText', 'replay', 'ignoreEpipe', 'readStdin', 'ensureApiKey', 'login', 'logout', 'main', 'configDir', 'configPath'], units=248
+RPGParser[jev-code] - INFO - Response: <analysis>
+All target files have now been read, including the remainder of `src/ui/session.ts` (the `answer`/`shell`/`execute`/`show`/`cancel`/`close`/`command`/`submit` internals of `createSession`, and `runSession`, which mounts the Ink app, wires stdin end to session close, and returns the sessio
+RPGParser[jev-code] - INFO - [GLOBAL] finished function batch with 248 units
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ast-adapters.ts, mapped classes+funcs=['class AstRegistry', 'function readConfig', 'function loadAstModule', 'function loadInstalledAsts', 'function updateConfig', 'function installAstModule', 'function removeAstAdapter'], descs=27
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/bash-ast.ts, mapped classes+funcs=['function quote', 'function renderBashAst', 'function validateBashSource', 'function generateBashAst'], descs=8
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/cli.ts, mapped classes+funcs=['function stdinText', 'function replay', 'function ignoreEpipe', 'function readStdin', 'function ensureApiKey', 'function login', 'function logout', 'function main'], descs=14
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/config.ts, mapped classes+funcs=['function configDir', 'function configPath', 'function readConfig', 'function writeSecretJson', 'function writeConfig', 'function promptSecret', 'function resolveApiKey'], descs=11
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/decide.ts, mapped classes+funcs=['function shrinkText', 'function parseLabels', 'function validateLabels', 'function parseThreshold', 'function parseSpec', 'function asker', 'function fixed', 'function runDecide'], descs=11
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/decision-context.ts, mapped classes+funcs=['function windowSource', 'function buildDecisionContext'], descs=4
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/decisions.ts, mapped classes+funcs=['class Decisions', 'function projectJson', 'function jsonState', 'function identity'], descs=14
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/diff.ts, mapped classes+funcs=['function split', 'function diffLines', 'function formatHunk'], descs=4
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/env.ts, mapped classes+funcs=['function sanitizedEnv'], descs=1
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/eval.ts, mapped classes+funcs=['function loadTask', 'function loadTasks', 'function runPython', 'function commit', 'function runEval', 'function compareRecords', 'function formatComparison'], descs=11
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/generation.ts, mapped classes+funcs=['function fragmentsFrom', 'function syntaxFeedback', 'function generateText', 'function generateArguments'], descs=8
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/grid.ts, mapped classes+funcs=['function formatSearchOutcome', 'function describeCharacter', 'function characterAlphabet', 'function gridCursor'], descs=5
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/harness.ts, mapped classes+funcs=['class Harness', 'function trim', 'function boundedArgs'], descs=33
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/index.ts, mapped classes+funcs=[], descs=0
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/print.ts, mapped classes+funcs=['function withoutBody', 'function createPrinter', 'function printRun'], descs=6
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/provider.ts, mapped classes+funcs=['class JevProvider'], descs=2
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/python-ast.ts, mapped classes+funcs=['function node', 'function name', 'function symbolTable', 'function visible', 'function previewTree', 'function runPythonJson', 'function unparsePython', 'function validatePythonSource', 'function parseManifest', 'function validatePythonProject', 'function checkCandidate', 'function vocabulary', 'function createBuilder', 'function functionDef', 'function generate', 'function generatePythonAst', 'function generatePythonProject'], descs=23
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/python-search.ts, mapped classes+funcs=['function wantsReturn', 'function searchUnit'], descs=5
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/python-units.ts, mapped classes+funcs=['function importFrom', 'function isImport', 'function counts', 'function decomposeLayout', 'function decompose', 'function isEntry', 'function peersOf', 'function fillUnits', 'function assemble', 'function calledUnits', 'function crossImports', 'function assembleProject'], descs=15
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/render-plain.ts, mapped classes+funcs=['function plural', 'function fit', 'function dim', 'function bar', 'function header', 'function numbered', 'function renderBody', 'function renderDecision', 'function renderItem', 'function renderSummary', 'function renderLive', 'function renderStep'], descs=12
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/replay.ts, mapped classes+funcs=['function exists', 'function findJournal', 'function readJournal', 'function checkSchema', 'function gapMs', 'function sleep', 'function drive', 'function replayPlain'], descs=8
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/scored-grid.ts, mapped classes+funcs=['function compactContext', 'function generateScoredGrid'], descs=4
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/structured-text.ts, mapped classes+funcs=['function generateStructuredText'], descs=2
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/summary.ts, mapped classes+funcs=['function summaryFacts', 'function completionSummary', 'function runSummary'], descs=4
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/terminal-style.ts, mapped classes+funcs=['function isInteractiveTTY', 'function terminalColor', 'function paint', 'function highlightCode', 'function displayText', 'function fitLine'], descs=6
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/text-plan.ts, mapped classes+funcs=['function planText'], descs=2
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/timing.ts, mapped classes+funcs=['function formatDuration'], descs=1
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/tools.ts, mapped classes+funcs=['function text', 'function number', 'function unlinkQuiet', 'function stage', 'function atomicWrite', 'function atomicWriteAll', 'function runBash', 'function autoApproved', 'function builtInTools', 'function toolContext'], descs=16
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/transcript.ts, mapped classes+funcs=['function initialState', 'function lines', 'function key', 'function str', 'function pendingBody', 'function gridSource', 'function target', 'function body', 'function writtenPaths', 'function lowConfidence', 'function card', 'function live', 'function finish', 'function reduce', 'function reduceSession', 'function traceItem', 'function pct', 'function decisionHead', 'function decisionStrip', 'function livePhase'], descs=21
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/types.ts, mapped classes+funcs=[], descs=0
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/workspace.ts, mapped classes+funcs=['function isWithin', 'function resolveWorkspacePath', 'function listWorkspace'], descs=8
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/c.ts, mapped classes+funcs=['function ctype', 'function decl', 'function expr', 'function print', 'function stmt', 'function render', 'function isEnoent', 'function compile', 'function validate'], descs=22
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/core.ts, mapped classes+funcs=['function isPending', 'function table', 'function visible', 'function typeOf', 'function vocabulary', 'function generateProgram', 'function adapterFor', 'function group', 'function escapeDoubleQuoted', 'function hasHole'], descs=13
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/go.ts, mapped classes+funcs=['function goType', 'function expr', 'function block', 'function stmt', 'function walk', 'function render', 'function validate'], descs=19
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/index.ts, mapped classes+funcs=['function bundledAstAdapters'], descs=1
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/javascript.ts, mapped classes+funcs=['function annotate', 'function expr', 'function renderer', 'function validate'], descs=9
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/lua.ts, mapped classes+funcs=['function str', 'function prefix', 'function expr', 'function stmt', 'function render', 'function parse', 'function validate'], descs=19
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/ruby.ts, mapped classes+funcs=['function str', 'function expr', 'function stmt', 'function render', 'function check', 'function validate'], descs=18
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/rust.ts, mapped classes+funcs=['function annotate', 'function expr', 'function stmt', 'function render', 'function validate'], descs=16
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/sdk/decisions.ts, mapped classes+funcs=['class DecisionSession', 'function invalid', 'function isRecord', 'function assertExactKeys', 'function assertUnit', 'function topAlternatives', 'function assertJsonValue', 'function cloneState', 'function decisionSessionResources', 'function rebindDecisionSession'], descs=27
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/sdk/index.ts, mapped classes+funcs=[], descs=0
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/sdk/program.ts, mapped classes+funcs=['class ProgramInvalidError', 'class ProgramDefinitionError', 'class EventObserverError', 'class Program', 'function detailOf', 'function pathOf', 'function assertId', 'function freezeDefinition', 'function rootId', 'function emittedPaths', 'function inspectDefinition', 'function validateLimits', 'function definitionOf'], descs=17
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/sdk/resources.ts, mapped classes+funcs=['class RunResources', 'function resourceView', 'function validateCount', 'function reasonMessage'], descs=26
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/sdk/router.ts, mapped classes+funcs=['class Router'], descs=2
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/sdk/tree.ts, mapped classes+funcs=['class TreeDefinitionError', 'class TreeSlot', 'function assertName', 'function cloneRegistry'], descs=5
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/sdk/types.ts, mapped classes+funcs=['class DecisionError', 'class CancelledError', 'class LimitError', 'class ResourceExhaustedError'], descs=6
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/sdk/validation.ts, mapped classes+funcs=[], descs=0
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ui/app.tsx, mapped classes+funcs=['function phase', 'function statusLine', 'function App', 'function Footer'], descs=5
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ui/approval.tsx, mapped classes+funcs=['function Approval'], descs=1
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ui/live-area.tsx, mapped classes+funcs=['function LiveArea'], descs=1
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ui/prompt.tsx, mapped classes+funcs=['function commonPrefix', 'function Prompt'], descs=4
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ui/replay-session.ts, mapped classes+funcs=['function replayFooter', 'function createReplaySession', 'function runReplay'], descs=3
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ui/session.ts, mapped classes+funcs=['function msg', 'function createSession', 'function runSession'], descs=14
+RPGParser[jev-code] - INFO - [GLOBAL] file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ui/transcript-view.tsx, mapped classes+funcs=['function rowText', 'function TranscriptView'], descs=2
+RPGParser[jev-code] - INFO - [SUMMARY] total files=54, batches=1
+RPGParser[jev-code] - INFO - [SUMMARY] batch #0: files=54, tokens=20310, preview=['ast-adapters.ts', 'bash-ast.ts', 'cli.ts', 'config.ts', 'decide.ts', 'decision-context.ts', 'decisions.ts', 'diff.ts', 'env.ts', 'eval.ts']
+RPGParser[jev-code] - INFO - [SUMMARY] processing batch with 54 files: ['ast-adapters.ts', 'bash-ast.ts', 'cli.ts', 'config.ts', 'decide.ts', 'decision-context.ts', 'decisions.ts', 'diff.ts', 'env.ts', 'eval.ts']
+RPGParser[jev-code] - INFO - [SUMMARY] Response: <solution>
+{
+  "/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ast-adapters.ts": "language adapter registry and installation management",
+  "/home/firstmate/.treehouse/jev-code-22114f/1/jev...
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ast-adapters.ts -> language adapter registry and installation management
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/bash-ast.ts -> shell command synthesis and validation
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/cli.ts -> command line entry point and subcommand dispatch
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/config.ts -> user settings and credential storage
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/decide.ts -> question answering command line filter
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/decision-context.ts -> decision context assembly within budget
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/decisions.ts -> decision request facade with budget tracking
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/diff.ts -> textual change comparison and formatting
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/env.ts -> child process environment sanitization
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/eval.ts -> benchmark task execution and result comparison
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/generation.ts -> tool argument generation and validation
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/grid.ts -> character alphabet and cursor tracking for text generation
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/harness.ts -> agent run loop and tool orchestration
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/index.ts -> public package export surface
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/print.ts -> streaming run output rendering and approval prompting
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/provider.ts -> decision request delivery to model service
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/python-ast.ts -> python syntax tree construction and program synthesis
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/python-search.ts -> alternative function implementation search and ranking
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/python-units.ts -> program decomposition into functions and modules
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/render-plain.ts -> plain text transcript and summary rendering
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/replay.ts -> recorded run journal playback
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/scored-grid.ts -> position by position scored text composition
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/structured-text.ts -> bounded token text composition
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/summary.ts -> run outcome summary assembly
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/terminal-style.ts -> terminal color and text display formatting
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/text-plan.ts -> field value planning before incremental composition
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/timing.ts -> elapsed duration formatting
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/tools.ts -> built in agent tool implementations for files and commands
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/transcript.ts -> run event reduction into presentation state
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/types.ts -> shared tool and run type declarations
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/workspace.ts -> workspace path resolution and file enumeration
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/c.ts -> c source rendering and compiler validation
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/core.ts -> shared program construction across language dialects
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/go.ts -> go source rendering and toolchain validation
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/index.ts -> bundled language adapter listing
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/javascript.ts -> javascript and typescript source rendering and validation
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/lua.ts -> lua source rendering and interpreter validation
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/ruby.ts -> ruby source rendering and checker validation
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/rust.ts -> rust source rendering and toolchain validation
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/sdk/decisions.ts -> decision session dispatch and answer validation
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/sdk/index.ts -> sdk public export surface
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/sdk/program.ts -> decision program definition and inspection
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/sdk/resources.ts -> run budget accounting and concurrency control
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/sdk/router.ts -> route table definition for decision branching
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/sdk/tree.ts -> grammar slot definition for tree structured generation
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/sdk/types.ts -> sdk error type declarations
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/sdk/validation.ts -> value validator contract and result resolution
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ui/app.tsx -> interactive session interface composition
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ui/approval.tsx -> operator approval prompt component
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ui/live-area.tsx -> in progress work display component
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ui/prompt.tsx -> task input prompt component with completion
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ui/replay-session.ts -> recorded run playback as interactive session
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ui/session.ts -> interactive session state and command handling
+RPGParser[jev-code] - INFO - [SUMMARY] /home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ui/transcript-view.tsx -> completed transcript display component
+RPGParser[jev-code] - INFO - [SUMMARY] finished batch with 54 files
+RPGParser[jev-code] - INFO - Successfully parsed: 54 files
+RPGParser[jev-code] - INFO - Features parsed: files=54
+RPGParser[jev-code] - INFO - Dominant language detected: typescript
+RPGParser[jev-code] - INFO - Refactoring to RPG...
+RPGParser[jev-code] - INFO - Planning functional areas...
+LLM call failed with return code 1: 
+LLM call failed with return code 1: 
+LLM call failed with return code 1: 
+RPGParser[jev-code] - WARNING - Iteration 2 failed: 'NoneType' object has no attribute 'split'
+LLM call failed with return code 1: 
+LLM call failed with return code 1: 
+LLM call failed with return code 1: 
+RPGParser[jev-code] - WARNING - Iteration 3 failed: 'NoneType' object has no attribute 'split'
+LLM call failed with return code 1: 
+RPGParser[jev-code] - INFO - Planned functional areas: ['DecisionSdk', 'ModelDecisionGateway', 'CodeSynthesis', 'AgentOrchestration', 'SessionPresentation', 'CommandLineInterface', 'EvaluationHarness']
+RPGParser[jev-code] - INFO - Total folders to process: 4
+Refactoring folders:   0%|                                                    | 0/4 [00:00<?, ?it/s]RPGParser[jev-code] - INFO - Scanning folder [1/4]: src
+RPGParser[jev-code] - INFO - Scanning folder [2/4]: src/lang
+RPGParser[jev-code] - INFO - Scanning folder [3/4]: src/sdk
+RPGParser[jev-code] - INFO - Scanning folder [4/4]: src/ui
+RPGParser[jev-code] - INFO - Processing batch #1: folders=['src', 'src/lang', 'src/sdk', 'src/ui'], files=50
+RPGParser[jev-code] - INFO - Iteration Begin
+RPGParser[jev-code] - INFO - Initialized REFACTOR agent with 50 top-level feature groups.
+RPGParser[jev-code] - INFO - Iteration 1/5 started
+RPGParser[jev-code] - INFO - LLM response: <solution>
+{
+  "DecisionSdk/define decision program/declare branching structure": ["decision program definition and inspection", "route table definition for decision branching", "grammar slot definition for tree structured generation"],
+  "DecisionSdk/request decisions/track consumed budget": ["decision request facade with budget tracking", "decision context assembly within budget"],
+  "DecisionSdk/limit run resources/coordinate concurrent work": ["run budget accounting and concurrency control"]
+RPGParser[jev-code] - INFO - Model action: {'DecisionSdk/define decision program/declare branching structure': ['decision program definition and inspection', 'route table definition for decision branching', 'grammar slot definition for tree structured generation'], 'DecisionSdk/request decisions/track consumed budget': ['decision request facade with budget tracking', 'decision context assembly within budget'], 'DecisionSdk/limit run resources/coordinate concurrent work': ['run budget accounting and concurrency control'], 'DecisionSdk/validate returned values/report failure causes': ['value validator contract and result resolution', 'sdk error type declarations'], 'DecisionSdk/expose sdk surface/publish stable exports': ['sdk public export surface'], 'ModelDecisionGateway/deliver decision requests/carry cancellation signals': ['decision request delivery to model service'], 'ModelDecisionGateway/dispatch decision sessions/verify answer validity': ['decision session dispatch and answer validation'], 'CodeSynthesis/manage language adapters/register dialect support': ['language adapter registry and installation management', 'bundled language adapter listing'], 'CodeSynthesis/render dialect source/verify with toolchain': ['python syntax tree construction and program synthesis', 'c source rendering and compiler validation', 'go source rendering and toolchain validation', 'javascript and typescript source rendering and validation', 'lua source rendering and interpreter validation', 'ruby source rendering and checker validation', 'rust source rendering and toolchain validation'], 'CodeSynthesis/assemble program skeleton/share dialect primitives': ['shared program construction across language dialects'], 'CodeSynthesis/decompose objective into units/plan function boundaries': ['program decomposition into functions and modules'], 'CodeSynthesis/search implementation variants/rank candidate solutions': ['alternative function implementation search and ranking'], 'CodeSynthesis/synthesize shell commands/verify command soundness': ['shell command synthesis and validation'], 'CodeSynthesis/compose text incrementally/track writing position': ['position by position scored text composition', 'character alphabet and cursor tracking for text generation'], 'CodeSynthesis/constrain generated values/bound choice space': ['bounded token text composition', 'field value planning before incremental composition'], 'AgentOrchestration/drive agent turns/sequence tool execution': ['agent run loop and tool orchestration'], 'AgentOrchestration/provide builtin capabilities/act on files and commands': ['built in agent tool implementations for files and commands'], 'AgentOrchestration/generate tool invocations/validate argument payloads': ['tool argument generation and validation'], 'AgentOrchestration/guard workspace boundary/sanitize child environment': ['workspace path resolution and file enumeration', 'child process environment sanitization'], 'AgentOrchestration/declare shared contracts/publish package exports': ['shared tool and run type declarations', 'public package export surface'], 'SessionPresentation/stream live run output/prompt operator approval': ['streaming run output rendering and approval prompting'], 'SessionPresentation/compose session interface/show work in progress': ['interactive session interface composition', 'in progress work display component'], 'SessionPresentation/request operator consent/collect approval decision': ['operator approval prompt component'], 'SessionPresentation/render run transcript/summarize completed work': ['plain text transcript and summary rendering', 'run outcome summary assembly'], 'SessionPresentation/derive view state from events/name activity stage': ['run event reduction into presentation state'], 'SessionPresentation/replay recorded runs/pace journal events': ['recorded run journal playback'], 'SessionPresentation/style displayed text/adapt to terminal capability': ['terminal color and text display formatting'], 'SessionPresentation/compare text revisions/highlight changed regions': ['textual change comparison and formatting'], 'SessionPresentation/format measured values/express elapsed time': ['elapsed duration formatting'], 'CommandLineInterface/dispatch user commands/route subcommand invocation': ['command line entry point and subcommand dispatch'], 'CommandLineInterface/answer questions from input stream/enforce allowed choices': ['question answering command line filter'], 'CommandLineInterface/persist user configuration/store credentials securely': ['user settings and credential storage'], 'EvaluationHarness/run benchmark tasks/compare recorded results': ['benchmark task execution and result comparison']}
+RPGParser[jev-code] - INFO - Raw response snippet: <solution>
+{
+  "DecisionSdk/define decision program/declare branching structure": ["decision program definition and inspection", "route table definition for decision branching", "grammar slot definition for tree structured generation"],
+  "DecisionSdk/request decisions/track consumed budget": ["deci...
+RPGParser[jev-code] - INFO - Env Feedback: Environment feedback after this iteration:
+
+Valid paths:
+["DecisionSdk/define decision program/declare branching structure", "DecisionSdk/request decisions/track consumed budget", "DecisionSdk/limit run resources/coordinate concurrent work", "DecisionSdk/validate returned values/report failure causes", "DecisionSdk/expose sdk surface/publish stable exports", "ModelDecisionGateway/deliver decision requests/carry cancellation signals", "ModelDecisionGateway/dispatch decision sessions/verify answer validity", "CodeSynthesis/manage language adapters/register dialect support", "CodeSynthesis/render dialect source/verify with toolchain", "CodeSynthesis/assemble program skeleton/share dialect primitives", "CodeSynthesis/decompose objective into units/plan function boundaries", "CodeSynthesis/search implementation variants/rank candidate solutions", "CodeSynthesis/synthesize shell commands/verify command soundness", "CodeSynthesis/compose text incrementally/track writing position", "CodeSynthesis/constrain generated values/bound choice space", "AgentOrchestration/drive agent turns/sequence tool execution", "AgentOrchestration/provide builtin capabilities/act on files and commands", "AgentOrchestration/generate tool invocations/validate argument payloads", "AgentOrchestration/guard workspace boundary/sanitize child environment", "AgentOrchestration/declare shared contracts/publish package exports", "SessionPresentation/stream live run output/prompt operator approval", "SessionPresentation/compose session interface/show work in progress", "SessionPresentation/request operator consent/collect approval decision", "SessionPresentation/render run transcript/summarize completed work", "SessionPresentation/derive view state from events/name activity stage", "SessionPresentation/replay recorded runs/pace journal events", "SessionPresentation/style displayed text/adapt to terminal capability", "SessionPresentation/compare text revisions/highlight changed regions", "SessionPresentation/format measured values/express elapsed time", "CommandLineInterface/dispatch user commands/route subcommand invocation", "CommandLineInterface/answer questions from input stream/enforce allowed choices", "CommandLineInterface/persist user configuration/store credentials securely", "EvaluationHarness/run benchmark tasks/compare recorded results"]
+
+Invalid paths and reasons:
+None
+
+Updated functional areas: ['DecisionSdk', 'DecisionSdk', 'DecisionSdk', 'DecisionSdk', 'DecisionSdk', 'ModelDecisionGateway', 'ModelDecisionGateway', 'CodeSynthesis', 'CodeSynthesis', 'CodeSynthesis', 'CodeSynthesis', 'CodeSynthesis', 'CodeSynthesis', 'CodeSynthesis', 'CodeSynthesis', 'AgentOrchestration', 'AgentOrchestration', 'AgentOrchestration', 'AgentOrchestration', 'AgentOrchestration', 'SessionPresentation', 'SessionPresentation', 'SessionPresentation', 'SessionPresentation', 'SessionPresentation', 'SessionPresentation', 'SessionPresentation', 'SessionPresentation', 'SessionPresentation', 'CommandLineInterface', 'CommandLineInterface', 'CommandLineInterface', 'EvaluationHarness']
+Remaining features to organize:
+[]
+
+Please fix the invalid paths using the correct functional area names and format:
+FunctionalArea/SubCategory/Feature
+Do NOT modify or repeat any previously assigned features. Ensure each remaining feature is mapped exactly once to a valid path.
+RPGParser[jev-code] - INFO - Processed features so far: 50/50
+RPGParser[jev-code] - INFO - All features processed. Exiting loop.
+RPGParser[jev-code] - INFO - Folder processing complete: src, src/lang, src/sdk, src/ui
+RPGParser[jev-code] - INFO - Finished batch #1 for folders: ['src', 'src/lang', 'src/sdk', 'src/ui']
+Refactoring folders: 100%|████████████████████████████████████████████| 4/4 [00:57<00:00, 14.31s/it]Refactoring folders: 100%|████████████████████████████████████████████| 4/4 [00:57<00:00, 14.31s/it]
+RPGParser[jev-code] - INFO - Processing batch #2: folders=['src/ui'], files=4
+RPGParser[jev-code] - INFO - Iteration Begin
+RPGParser[jev-code] - INFO - Initialized REFACTOR agent with 4 top-level feature groups.
+RPGParser[jev-code] - INFO - Iteration 1/5 started
+RPGParser[jev-code] - INFO - LLM response: <solution>
+{
+  "SessionPresentation/collect operator input/complete typed instructions": ["task input prompt component with completion"],
+  "SessionPresentation/replay recorded runs/drive playback interaction": ["recorded run playback as interactive session"],
+  "SessionPresentation/compose session interface/coordinate session commands": ["interactive session state and command handling"],
+  "SessionPresentation/render run transcript/display finished exchanges": ["completed transcript display com
+RPGParser[jev-code] - INFO - Model action: {'SessionPresentation/collect operator input/complete typed instructions': ['task input prompt component with completion'], 'SessionPresentation/replay recorded runs/drive playback interaction': ['recorded run playback as interactive session'], 'SessionPresentation/compose session interface/coordinate session commands': ['interactive session state and command handling'], 'SessionPresentation/render run transcript/display finished exchanges': ['completed transcript display component']}
+RPGParser[jev-code] - INFO - Raw response snippet: <solution>
+{
+  "SessionPresentation/collect operator input/complete typed instructions": ["task input prompt component with completion"],
+  "SessionPresentation/replay recorded runs/drive playback interaction": ["recorded run playback as interactive session"],
+  "SessionPresentation/compose session ...
+RPGParser[jev-code] - INFO - Env Feedback: Environment feedback after this iteration:
+
+Valid paths:
+["SessionPresentation/collect operator input/complete typed instructions", "SessionPresentation/replay recorded runs/drive playback interaction", "SessionPresentation/compose session interface/coordinate session commands", "SessionPresentation/render run transcript/display finished exchanges"]
+
+Invalid paths and reasons:
+None
+
+Updated functional areas: ['SessionPresentation', 'SessionPresentation', 'SessionPresentation', 'SessionPresentation']
+Remaining features to organize:
+[]
+
+Please fix the invalid paths using the correct functional area names and format:
+FunctionalArea/SubCategory/Feature
+Do NOT modify or repeat any previously assigned features. Ensure each remaining feature is mapped exactly once to a valid path.
+RPGParser[jev-code] - INFO - Processed features so far: 4/4
+RPGParser[jev-code] - INFO - All features processed. Exiting loop.
+RPGParser[jev-code] - INFO - Folder processing complete: src/ui
+RPGParser[jev-code] - INFO - Finished batch #2 for folders: ['src/ui']
+RPGParser[jev-code] - INFO - RPG refactoring done.
+INFO:RPGParser[jev-code]:RPG refactoring done.
+RPGParser[jev-code] - INFO - === RPG parsing pipeline finished ===
+INFO:RPGParser[jev-code]:=== RPG parsing pipeline finished ===
+{
+  "status": "success",
+  "repo_name": "jev-code",
+  "output_path": "/home/firstmate/.cmind/workspaces/home-firstmate-treehouse-jev-code-22114f-1-jev-code/data/rpg.json",
+  "node_count": 649,
+  "edge_count": 724,
+  "viz_path": "/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/.cmind/reports/rpg.html",
+  "functional_areas": 7,
+  "dep_nodes": 752,
+  "dep_edges": 1310,
+  "dep_to_rpg_map_size": 385,
+  "trajectory": "/home/firstmate/.cmind/workspaces/home-firstmate-treehouse-jev-code-22114f-1-jev-code/data/trajectory/encode_trajectory_20260920_124907.json"
+}
