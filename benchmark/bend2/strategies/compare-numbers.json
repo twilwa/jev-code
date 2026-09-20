@@ -1,0 +1,14 @@
+{
+  "$schema": "../strategy.schema.json",
+  "schemaVersion": 1,
+  "steps": [
+    { "slot": "helper_definition", "criterion": "none" },
+    { "slot": "do_block", "criterion": "finish" },
+    { "slot": "final_print", "criterion": "call" },
+    { "slot": "final_print:callee", "description": "Render a Bool as a String (base.bend:2166)." },
+    { "slot": "final_print:argument_0:argument_0", "criterion": "u32" },
+    { "slot": "final_print:argument_0:argument_0:u32", "description": "9" },
+    { "slot": "final_print:argument_0:argument_1", "criterion": "u32" },
+    { "slot": "final_print:argument_0:argument_1:u32", "description": "9" }
+  ]
+}

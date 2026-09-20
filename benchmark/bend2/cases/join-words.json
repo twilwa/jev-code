@@ -1,0 +1,8 @@
+{
+  "$schema": "../case.schema.json",
+  "schemaVersion": 1,
+  "id": "join-words",
+  "task": "Print the exact text formed by joining \"semantic \" and \"check\".",
+  "expected": { "stdout": "semantic check\n", "exitCode": 0 },
+  "offlineStrategy": "join-words.json"
+}

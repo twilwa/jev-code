@@ -34,6 +34,9 @@
     "start": "node dist/cli.js",
     "test": "tsx --test test/*.test.ts test/*.test.tsx",
     "test:package": "tsx --test test/package-contract.contract.ts",
+    "benchmark:bend2:setup": "bash scripts/setup-bend2-toolchain.sh",
+    "benchmark:bend2:offline": "tsx benchmark/bend2/run.ts --offline",
+    "benchmark:bend2": "bash scripts/setup-bend2-toolchain.sh && tsx benchmark/bend2/run.ts --offline",
     "prepack": "pnpm run build"
   },
   "dependencies": {

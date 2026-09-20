@@ -1,0 +1,14 @@
+{
+  "$schema": "../strategy.schema.json",
+  "schemaVersion": 1,
+  "steps": [
+    { "slot": "helper_definition", "criterion": "none" },
+    { "slot": "do_block", "criterion": "finish" },
+    { "slot": "final_print", "criterion": "call" },
+    { "slot": "final_print:callee", "description": "Join two Strings (base.bend:1774)." },
+    { "slot": "final_print:argument_0", "criterion": "str" },
+    { "slot": "final_print:argument_0:string", "description": "\"semantic \"" },
+    { "slot": "final_print:argument_1", "criterion": "str" },
+    { "slot": "final_print:argument_1:string", "description": "\"check\"" }
+  ]
+}

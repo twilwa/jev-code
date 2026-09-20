@@ -15,6 +15,10 @@ The Bend adapter's compiler-backed tests need `JEV_BEND_PATH` set to a
 not vendored, because the licence question is unresolved. Without it `validate`
 fails closed and those tests skip. See `docs/bend2-pilot/04-report.md`.
 
+`corepack pnpm run benchmark:bend2` prepares the pinned Bend checkout and runs
+the offline semantic suite. Its cases, measurements, live-budget gate, and
+troubleshooting notes are documented in `docs/bend2-semantic-benchmark.md`.
+
 ## Maintaining this file
 
 Keep this file for knowledge useful to almost every future agent session in this project.

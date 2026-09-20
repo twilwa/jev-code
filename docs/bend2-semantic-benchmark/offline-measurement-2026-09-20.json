@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "mode": "offline",
+  "startedAt": "2026-09-20T20:56:57.607Z",
+  "endedAt": "2026-09-20T20:56:59.042Z",
+  "toolchain": {
+    "bendVersion": "2.0.20",
+    "bendRevision": "7561656155a4285c1e4ccfcb3505ab59524de973",
+    "nodeVersion": "24.21.0",
+    "pnpmVersion": "10.30.3",
+    "compatibility": "compatible"
+  },
+  "summary": {
+    "successCount": 3,
+    "failureCount": 0,
+    "requestCount": 26,
+    "tokenCount": { "input": 0, "output": 0, "total": 0 },
+    "providerLatencyMs": 0.5309990000000653,
+    "wallTimeMs": 1435.134636
+  },
+  "cases": [
+    {
+      "id": "add-two",
+      "outcome": "pass",
+      "errorClass": null,
+      "signals": { "parse": "pass", "type": "pass", "ownership": "pass" },
+      "measurements": {
+        "requestCount": 10,
+        "tokenCount": { "input": 0, "output": 0, "total": 0 },
+        "providerLatencyMs": 0.2900240000000167,
+        "wallTimeMs": 483.430842
+      }
+    },
+    {
+      "id": "compare-numbers",
+      "outcome": "pass",
+      "errorClass": null,
+      "signals": { "parse": "pass", "type": "pass", "ownership": "pass" },
+      "measurements": {
+        "requestCount": 8,
+        "tokenCount": { "input": 0, "output": 0, "total": 0 },
+        "providerLatencyMs": 0.07645599999989372,
+        "wallTimeMs": 475.34453899999994
+      }
+    },
+    {
+      "id": "join-words",
+      "outcome": "pass",
+      "errorClass": null,
+      "signals": { "parse": "pass", "type": "pass", "ownership": "pass" },
+      "measurements": {
+        "requestCount": 8,
+        "tokenCount": { "input": 0, "output": 0, "total": 0 },
+        "providerLatencyMs": 0.16451900000015485,
+        "wallTimeMs": 451.93725599999993
+      }
+    }
+  ]
+}
