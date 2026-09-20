@@ -141,6 +141,40 @@ test('generator offers no production that would reference an unbound name', asyn
   assert.ok(!offered.includes('name'), `name offered with nothing in scope: ${offered.join(', ')}`);
 });
 
+test('a provider that picks the first option for both parameter slots still gets two distinct binders', async () => {
+  // Both parameter slots are offered before either name reaches the scope, so
+  // without reserving each as it is chosen the identical pool lets a provider
+  // name the same binder twice: `def f(+a: U32, +a: U32)`.
+  const pools: Record<string, string[]> = {};
+  const source = await run('count items and print the total message', ({ slot, criteria }, n) => {
+    if (/^parameter_\d+$/.test(slot)) pools[slot] = [...criteria];
+    switch (slot) {
+      case 'helper_definition': return 'one';
+      case 'parameter_count': return '2';
+      case 'definition_body': return 'name';
+      case 'do_block': return 'finish';
+      case 'final_print': return n === 0 ? 'str' : criteria[0]!;
+      default: return criteria[0]!;      // always the first option on offer
+    }
+  });
+  assert.deepEqual(Object.keys(pools).sort(), ['parameter_0', 'parameter_1'],
+    'both parameter slots must be reached for this test to mean anything');
+  const binders = /^def \w+\(\+(\w+): U32, \+(\w+): U32\) ->/m.exec(source);
+  assert.ok(binders, `expected a two-parameter definition:\n${source}`);
+  assert.notEqual(binders[1], binders[2], `duplicate parameter binder:\n${source}`);
+});
+
+/**
+ * Measured, not assumed: the checker accepts `def dup(+a: U32, +a: U32)`,
+ * treating the second binder as shadowing rather than as an error. So no
+ * compiler stage guards the defect above; the renderer assertion is the guard,
+ * and this test records why.
+ */
+test('the real Bend checker accepts a duplicate parameter binder, so no stage catches it', { skip: checkerAvailable() ? false : skipWithoutChecker }, async () => {
+  resetBendChecker();
+  await validateBendSource('import Base\n\ndef dup(+a: U32, +a: U32) -> U32:\n  U32.add(a, a)\n\ndef main() -> IO(Unit):\n  do IO<Unit>:\n    IO.print(U32.show(dup(1, 2)))\n', signal());
+});
+
 test('generator refuses to exceed its production budget', async () => {
   await assert.rejects(run('print a message', ({ criteria }) => criteria[0]!, 3), /budget exhausted/);
 });

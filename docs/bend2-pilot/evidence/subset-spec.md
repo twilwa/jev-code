@@ -106,3 +106,24 @@ emits `+` unconditionally.
 
 - `p4-param-used-twice.bend`
 - `p10-let-reuse.bend`
+
+## Requirements this baseline depends on
+
+**Node 22.18 or newer.** Reproducing any of it means loading the checker, and
+the loader imports its TypeScript entry points and relies on Node stripping
+their types, with no build step. Type stripping is only unflagged from Node
+22.18; on Node 22.0–22.17 the same run needs `--experimental-strip-types`, and
+below Node 22 the checker cannot be loaded at all. The repository's
+`package.json` says `node >= 22`, which is looser than this. It is recorded as
+a limit rather than repaired: upstream packaging is not this pilot's to rewrite,
+and avoiding the `.ts` import would mean building or vendoring the checker,
+which the unresolved licence question forbids.
+
+## Measured: what the checker does not catch
+
+A duplicate parameter binder — `def dup(+a: U32, +a: U32) -> U32` — is
+**accepted** at all three stages; the checker treats the second binder as
+shadowing rather than as an error. Recorded here because it marks the edge of
+what a clean three-stage run is evidence of. Nothing in this baseline may be
+read as "the checker would have caught it": for this defect it demonstrably does
+not, and the generator guards it at the point of construction instead.

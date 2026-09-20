@@ -107,6 +107,10 @@ export class BendCheckError extends Error {
 
 export const BEND_PATH_ENV = 'JEV_BEND_PATH';
 const MISSING_CHECKER = `Bend validation needs the Bend 2 checker: set ${BEND_PATH_ENV} to a bendlang/bend checkout (pinned 7561656155a4285c1e4ccfcb3505ab59524de973). Upstream sources are not vendored here.`;
+/** The checker is imported as `.ts` and relies on type stripping, which is only
+ * unflagged from Node 22.18. Naming the version keeps an older Node 22 from
+ * looking like a missing or corrupt checkout. */
+const NODE_REQUIREMENT = 'Loading it imports TypeScript directly, which needs Node 22.18 or newer (or an older Node 22 run with --experimental-strip-types).';
 
 interface BendModule {
   book_nil(): { hols: number; open: number };
@@ -133,7 +137,7 @@ const loadChecker = async (): Promise<{ Bend: BendModule; Comp: CompModule }> =>
       if (typeof Bend.book_load !== 'function' || typeof Comp.book_owned !== 'function') throw new Error('not a bendlang/bend checkout');
       return { Bend, Comp };
     } catch (cause) {
-      throw new Error(`${MISSING_CHECKER} Loading ${root} failed: ${cause instanceof Error ? cause.message : String(cause)}`, { cause });
+      throw new Error(`${MISSING_CHECKER} ${NODE_REQUIREMENT} Loading ${root} failed: ${cause instanceof Error ? cause.message : String(cause)}`, { cause });
     }
   })();
   return checker;
@@ -282,12 +286,19 @@ export async function generateBendAst(decisions: Decisions, state: State, field:
     reserved.add(id);
     const count = Number(await pick('parameter_count', { '1': 'One parameter.', '2': 'Two parameters.' }));
     const params: BendParam[] = [];
-    for (let index = 0; index < count; index++) params.push({ id: await freshIdentifier(`parameter_${index}`), type: 'U32' });
+    // Each name is reserved as it is chosen: nothing else marks a parameter as
+    // taken until the scope is populated below, so without this both slots see
+    // the same pool and can name the same binder twice.
+    for (let index = 0; index < count; index++) {
+      const param = await freshIdentifier(`parameter_${index}`);
+      reserved.add(param);
+      params.push({ id: param, type: 'U32' });
+    }
     for (const param of params) scope.set(param.id, param.type);
     // The body is built before the definition joins program.defs, so the
     // definition cannot call itself: recursion is outside the supported subset.
     const body = await expression('U32', 'definition_body', 0);
-    for (const param of params) scope.delete(param.id);
+    for (const param of params) { scope.delete(param.id); reserved.delete(param.id); }
     program.defs.push({ id, params, returns: 'U32', body });
   }
 

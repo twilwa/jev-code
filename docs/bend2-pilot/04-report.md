@@ -16,9 +16,9 @@ vendored (see §7).
 
 | File | Status | Contents |
 | --- | --- | --- |
-| `src/bend-ast.ts` | new, 317 lines | Bend term types, renderer, the bounded decision loop, the four-stage checker driver, and the `bendAstAdapter` object. |
+| `src/bend-ast.ts` | new, 328 lines | Bend term types, renderer, the bounded decision loop, the four-stage checker driver, and the `bendAstAdapter` object. |
 | `src/lang/index.ts` | modified, +2 −1 | One import and one array element appending `bendAstAdapter` to `bundledAstAdapters()`. |
-| `test/bend-ast.test.ts` | new, 321 lines | 23 tests: renderer units, decision-loop units, registry and routing, validation, rejection fixtures, end-to-end, a seeded fuzz round, and two self-checking lints. |
+| `test/bend-ast.test.ts` | new, 355 lines | 25 tests: renderer units, decision-loop units, registry and routing, validation, rejection fixtures, end-to-end, a seeded fuzz round, and two self-checking lints. |
 | `docs/bend2-pilot/evidence/subset-spec.md` | new | Ticket T11's candidate baseline: the supported subset, each row cited to a probe. |
 | `docs/bend2-pilot/evidence/request-count.mts`, `request-count.txt` | new | The request-count measurement of §6 and its recorded output. |
 
@@ -119,12 +119,12 @@ extracts every test name, and fails if any contains `correct`, `correctly`,
 | Run | Result |
 | --- | --- |
 | `pnpm run typecheck` | exit **0** |
-| `test/bend-ast.test.ts` with `JEV_BEND_PATH` set | 23 tests, **23 pass**, 0 fail, 0 skipped |
-| `test/bend-ast.test.ts` with `JEV_BEND_PATH` unset | 23 tests, 14 pass, 0 fail, **9 skipped** |
-| `test/bend-ast.test.ts` at `JEV_BEND_FUZZ_ROUNDS=400` | all pass, 32.5 s |
-| `pnpm run test` (full suite) with `JEV_BEND_PATH` set | 332 tests, 320 pass, **1 fail**, 11 skipped, exit **1** |
+| `test/bend-ast.test.ts` with `JEV_BEND_PATH` set | 25 tests, **25 pass**, 0 fail, 0 skipped |
+| `test/bend-ast.test.ts` with `JEV_BEND_PATH` unset | 25 tests, 15 pass, 0 fail, **10 skipped** |
+| `test/bend-ast.test.ts` at `JEV_BEND_FUZZ_ROUNDS=400` | all pass, 37.7 s |
+| `pnpm run test` (full suite) with `JEV_BEND_PATH` set | 334 tests, 322 pass, **1 fail**, 11 skipped, exit **1** |
 
-The nine skips without the checker are **unverified, not passed**: they are the
+The ten skips without the checker are **unverified, not passed**: they are the
 compiler-backed assertions, and the test file labels them
 `set JEV_BEND_PATH to a bendlang/bend checkout` rather than reporting green.
 
@@ -142,8 +142,8 @@ mise use -g go@1.27.1
 This is **pre-existing and environmental**, not caused by this work:
 
 - The same failure was recorded on this VPS before any change in this branch was
-  made (then: 309 tests, 297 pass, 1 fail, 11 skipped). This branch adds 23
-  tests and 23 passes — 332 and 320 — and moves nothing else.
+  made (then: 309 tests, 297 pass, 1 fail, 11 skipped). This branch adds 25
+  tests and 25 passes — 334 and 322 — and moves nothing else.
 - `test/lang-fuzz.test.ts` is unmodified in this branch (`git diff HEAD` touches
   only `src/lang/index.ts`), and it imports `Dialect` values directly
   (`:6-13`), not the adapter registry, so `bendAstAdapter` is not reachable from
@@ -214,10 +214,35 @@ This follows the existing rust and lua precedent of requiring an external
 toolchain. It is **not vendored**, because the licence question is unresolved
 (§8).
 
-**Node type-stripping.** The repository runs `.ts` directly under Node's
-strip-only mode, which rejects TypeScript parameter properties; `BendCheckError`
-therefore declares `readonly stage` as a field and assigns it in the
-constructor rather than using the shorthand.
+**Node type-stripping — a real floor, not just a style note.** The loader
+imports the checker's `.ts` entry points directly and relies on Node stripping
+their types, with no build step. Type stripping is only unflagged from **Node
+22.18**; on Node 22.0–22.17 it needs `--experimental-strip-types`, and below
+Node 22 `validate` cannot load the checker at all. The repository's
+`package.json` advertises `node >= 22`, which is looser than what `validate`
+actually requires.
+
+This is **accepted as a limit, not fixed here.** Raising the `engines` floor
+would rewrite upstream packaging, which this task does not own; restructuring
+the loader to avoid `.ts` imports would mean building or vendoring the checker,
+which the unresolved licence question forbids (§8). The disposition is instead
+to make the failure legible: the loader's error names the concrete requirement
+("Node 22.18 or newer, or an older Node 22 run with
+`--experimental-strip-types`") so an old-Node user is not left diagnosing a
+missing or corrupt checkout.
+
+A second consequence of the same mechanism: strip-only mode rejects TypeScript
+parameter properties, so `BendCheckError` declares `readonly stage` as a field
+and assigns it in the constructor rather than using the shorthand.
+
+**A duplicate parameter binder is not caught by any checker stage.** Measured,
+not assumed: `def dup(+a: U32, +a: U32) -> U32` is accepted at `parse`, `type`
+and `owned` — the checker treats the second binder as shadowing. The generator
+therefore cannot rely on a compiler stage to catch it, and reserves each
+parameter name as it is chosen (`src/bend-ast.ts:292-296`); the guard is a
+renderer-level assertion in `test/bend-ast.test.ts:144`, not a validation
+result. This is a worked example of why the three claims are kept apart: a
+clean run of all three stages was, here, evidence of nothing about this defect.
 
 **Compiler back ends untouched.** No change to `bend2/bend.ts` or any upstream
 code; the checker is called through its existing exported functions only.
