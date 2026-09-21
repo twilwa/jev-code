@@ -1,0 +1,8 @@
+{
+  "$schema": "../case.schema.json",
+  "schemaVersion": 1,
+  "id": "add-two",
+  "task": "Print the sum of 20 and 22 as a decimal number.",
+  "expected": { "stdout": "42\n", "exitCode": 0 },
+  "offlineStrategy": "add-two.json"
+}

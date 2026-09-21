@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/twilwa/jev-code/benchmark/bend2/case.schema.json",
+  "title": "Bend 2 semantic benchmark case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "task", "expected", "offlineStrategy"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+    "task": { "type": "string", "minLength": 1, "maxLength": 4000 },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stdout", "exitCode"],
+      "properties": {
+        "stdout": { "type": "string", "maxLength": 65536 },
+        "exitCode": { "const": 0 }
+      }
+    },
+    "offlineStrategy": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}\\.json$" }
+  }
+}

@@ -16,3 +16,5 @@ __pycache__/
 .vscode/tasks.json
 .mcp.json
 .claude/commands/
+.benchmark-tools/
+benchmark/bend2/results/

@@ -27,6 +27,10 @@ const selected = await router.select(
 
 See [the SDK guide](docs/sdk.md) and the executable [router](examples/router.ts) and [dependency-tree](examples/dependency-tree.ts) examples. Import from the package root; implementation paths are intentionally private.
 
+The [Bend 2 semantic benchmark](docs/bend2-semantic-benchmark.md) generates
+bounded programs from task specifications, executes them with a pinned Bend
+toolchain, and compares exact output with separately authored expectations.
+
 ## CLI SYNOPSIS
 
 ```

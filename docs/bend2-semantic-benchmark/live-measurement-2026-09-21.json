@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "mode": "live",
+  "startedAt": "2026-09-21T01:43:40.127Z",
+  "endedAt": "2026-09-21T01:43:45.701Z",
+  "toolchain": {
+    "bendVersion": "2.0.20",
+    "bendRevision": "7561656155a4285c1e4ccfcb3505ab59524de973",
+    "nodeVersion": "24.21.0",
+    "pnpmVersion": "10.30.3",
+    "compatibility": "compatible"
+  },
+  "summary": {
+    "successCount": 0,
+    "failureCount": 3,
+    "requestCount": 35,
+    "tokenCount": {
+      "input": 33547,
+      "output": 2943,
+      "total": 36490
+    },
+    "providerLatencyMs": 4262.460719,
+    "wallTimeMs": 5574.735476
+  },
+  "cases": [
+    {
+      "id": "add-two",
+      "task": "Print the sum of 20 and 22 as a decimal number.",
+      "outcome": "fail",
+      "errorClass": "wrong_output",
+      "detail": "Expected exit 0 and stdout \"42\\n\"; observed exit 0 and stdout \"80\\n\".",
+      "expected": {
+        "stdout": "42\n",
+        "exitCode": 0
+      },
+      "actual": {
+        "stdout": "80\n",
+        "exitCode": 0
+      },
+      "signals": {
+        "parse": "pass",
+        "type": "pass",
+        "ownership": "pass"
+      },
+      "measurements": {
+        "requestCount": 14,
+        "tokenCount": {
+          "input": 13209,
+          "output": 1063,
+          "total": 14272
+        },
+        "providerLatencyMs": 1670.989941,
+        "wallTimeMs": 2355.659892
+      },
+      "generatedSource": "import Base\n\ndef main() -> IO(Unit):\n  do IO<Unit>:\n    IO.print(U32.show(U32.add(U32.add(20, 20), U32.add(20, 20))))\n"
+    },
+    {
+      "id": "compare-numbers",
+      "task": "Compare 9 with 9 and print the Bend Bool result.",
+      "outcome": "fail",
+      "errorClass": "wrong_output",
+      "detail": "Expected exit 0 and stdout \"True\\n\"; observed exit 0 and stdout \"False\\n\".",
+      "expected": {
+        "stdout": "True\n",
+        "exitCode": 0
+      },
+      "actual": {
+        "stdout": "False\n",
+        "exitCode": 0
+      },
+      "signals": {
+        "parse": "pass",
+        "type": "pass",
+        "ownership": "pass"
+      },
+      "measurements": {
+        "requestCount": 12,
+        "tokenCount": {
+          "input": 11328,
+          "output": 940,
+          "total": 12268
+        },
+        "providerLatencyMs": 1447.9652899999985,
+        "wallTimeMs": 2013.208716
+      },
+      "generatedSource": "import Base\n\ndef main() -> IO(Unit):\n  do IO<Unit>:\n    IO.print(Bool.show(U32.is_eq(U32.add(9, 9), U32.sub(9, 9))))\n"
+    },
+    {
+      "id": "join-words",
+      "task": "Print the exact text formed by joining \"semantic \" and \"check\".",
+      "outcome": "fail",
+      "errorClass": "generation_error",
+      "detail": "DecisionError: Jev returned an invalid choice distribution.\n    at invalid (<repository>/src/sdk/decisions.ts:35:9)\n    at assertDistribution (<repository>/src/sdk/decisions.ts:67:53)\n    at DecisionSession.choose (<repository>/src/sdk/decisions.ts:156:27)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async Decisions.choose (<repository>/src/decisions.ts:104:20)\n    at async pick (<repository>/src/bend-ast.ts:226:53)\n    at async chooseFrom (<repository>/src/bend-ast.ts:232:22)\n    at async expression (<repository>/src/bend-ast.ts:299:36)\n    at async expression (<repository>/src/bend-ast.ts:304:65)\n    at async expression (<repository>/src/bend-ast.ts:304:65)",
+      "expected": {
+        "stdout": "semantic check\n",
+        "exitCode": 0
+      },
+      "actual": {
+        "stdout": "",
+        "exitCode": null
+      },
+      "signals": {
+        "parse": "not_run",
+        "type": "not_run",
+        "ownership": "not_run"
+      },
+      "measurements": {
+        "requestCount": 9,
+        "tokenCount": {
+          "input": 9010,
+          "output": 940,
+          "total": 9950
+        },
+        "providerLatencyMs": 1143.5054880000012,
+        "wallTimeMs": 1153.967552
+      },
+      "generatedSource": null
+    }
+  ]
+}

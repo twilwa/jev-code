@@ -1,0 +1,30 @@
+name: Bend 2 semantic benchmark
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  offline-benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      JEV_BEND_PATH: ${{ github.workspace }}/.benchmark-tools/bend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.30.3
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run typecheck
+      - run: pnpm run benchmark:bend2:setup
+      - run: pnpm exec tsx --test test/bend-semantic-benchmark.test.ts
+      - run: pnpm run benchmark:bend2:offline
