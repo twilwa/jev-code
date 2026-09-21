@@ -132,19 +132,45 @@ still useful as an operational measurement, but it is not a quality score. A
 dated local record is in
 `docs/bend2-semantic-benchmark/offline-measurement-2026-09-20.json`.
 
-## Live Jev comparison and the missing authorization
+The authorized live record is in
+`docs/bend2-semantic-benchmark/live-measurement-2026-09-21.json`. Its error
+stack keeps every frame but replaces the disposable checkout prefix with
+`<repository>`.
 
-The live path is ready but has not been run. No paid API call was made for this
-milestone. The current authorization lacks exact positive caps for all three
-of these environment variables:
+## Live Jev comparison
 
-- `JEV_BENCH_MAX_PAID_REQUESTS`
-- `JEV_BENCH_MAX_PAID_INPUT_TOKENS`
-- `JEV_BENCH_MAX_PAID_OUTPUT_TOKENS`
+Firstmate authorized one live run on 2026-09-21 with these caps:
 
-Those are the exact missing caps. The command refuses to construct a live run
-until all three are positive integers. Once an authorized budget supplies
-them, and the normal Jev credential is available, run:
+| Measurement | Authorized cap | Observed |
+| --- | ---: | ---: |
+| Requests | 300 | 35 |
+| Input tokens | 600,000 | 33,547 |
+| Output tokens | 60,000 | 2,943 |
+
+The run used the clean PR head
+`3c91ec521bc57a9710fd7e5ef359a13b5b724735` and the pinned Bend checkout. The
+TypeSafe key entered the process through the environment and is not stored in
+the report. The benchmark has no OpenRouter arm, so it made zero OpenRouter
+requests.
+
+No case passed the semantic criterion:
+
+| Case | Result | Expected stdout | Actual stdout | Compiler signals | Requests | Input tokens | Output tokens | Provider latency | Wall time |
+| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
+| `add-two` | `wrong_output` | `42\n` | `80\n` | parse, type, ownership passed | 14 | 13,209 | 1,063 | 1,670.990 ms | 2,355.660 ms |
+| `compare-numbers` | `wrong_output` | `True\n` | `False\n` | parse, type, ownership passed | 12 | 11,328 | 940 | 1,447.965 ms | 2,013.209 ms |
+| `join-words` | `generation_error` | `semantic check\n` | not run | parse, type, ownership not run | 9 | 9,010 | 940 | 1,143.505 ms | 1,153.968 ms |
+
+The run recorded zero successes, three failures, 36,490 total tokens,
+4,262.461 ms of provider latency, and 5,574.735 ms of wall time. The first two
+programs compiled and ran, but computed the wrong result. The third case
+stopped during generation because Jev returned an invalid choice distribution.
+This is a direct Jev result, unlike the seeded random generator tests. It is
+also only one run over three small cases, so it does not establish broader Jev
+quality.
+
+The command still requires explicit positive caps. A future run needs a new
+authorization and the normal Jev credential:
 
 ```bash
 JEV_BENCH_MAX_PAID_REQUESTS=... \
