@@ -1,0 +1,78 @@
+# CoderMind line-overlap dedup defect — check against jev-code
+# TES-36's RPG pilot recorded a line-overlap deduplication defect in graph output.
+# This is the check of whether it affects THIS graph. Run 2026-09-20.
+
+## Mechanism, from the installed cmind-cli sources
+# scripts/lang_parser/extractors/fallback.py:184  code=source_slice(lines, line_start, line_end)
+#   -> every unit's .code is the literal source slice of its own line range.
+# scripts/lang_parser/_ecmascript_parser.py:240-265  _class_member_units
+#   -> method units are emitted with ranges STRICTLY INSIDE their class unit's range.
+# scripts/common/code_dedup.py:24-31  dedup_code_blocks
+#   -> dedups on exact whitespace-stripped equality only (key = code.strip()).
+#   -> a method slice is never byte-equal to the enclosing class slice, so BOTH survive
+#      and the method source appears TWICE in file_code.
+# scripts/func_design/interfaces_store.py:1212 and scripts/plan_tasks.py:520 are the consumers.
+
+## Measured on this repository's own TypeScript
+$ python dedup_probe.py src/ast-adapters.ts
+file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/ast-adapters.ts lines=119 units=22
+strictly-nested unit pairs: 5
+  class AstRegistry [28-60] CONTAINS method constructor [30-30]
+  class AstRegistry [28-60] CONTAINS method register [31-42]
+  class AstRegistry [28-60] CONTAINS method snapshot [43-43]
+  class AstRegistry [28-60] CONTAINS method list [44-44]
+  class AstRegistry [28-60] CONTAINS method resolve [45-59]
+original file bytes = 8411
+dedup_file_code bytes = 10317  (ratio 1.23x)
+blocks in: 22  blocks surviving dedup: 22
+
+$ python dedup_probe.py src/harness.ts
+file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/harness.ts lines=344 units=22
+strictly-nested unit pairs: 7
+  class Harness [45-344] CONTAINS method constructor [53-65]
+  class Harness [45-344] CONTAINS method registerTool [67-86]
+  class Harness [45-344] CONTAINS method registerAst [88-91]
+  class Harness [45-344] CONTAINS method enqueue [94-98]
+  class Harness [45-344] CONTAINS method observe [101-105]
+  class Harness [45-344] CONTAINS method reset [107-112]
+  class Harness [45-344] CONTAINS method run [114-343]
+original file bytes = 24150
+dedup_file_code bytes = 44501  (ratio 1.84x)
+blocks in: 22  blocks surviving dedup: 22
+
+$ python dedup_probe.py src/decisions.ts
+file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/decisions.ts lines=136 units=17
+strictly-nested unit pairs: 9
+  class Decisions [40-136] CONTAINS method requests [41-41]
+  class Decisions [40-136] CONTAINS method exhausted [42-42]
+  class Decisions [40-136] CONTAINS method usage [43-43]
+  class Decisions [40-136] CONTAINS method fork [62-64]
+  class Decisions [40-136] CONTAINS method assertRequestBudget [75-84]
+  class Decisions [40-136] CONTAINS method choose [103-106]
+  class Decisions [40-136] CONTAINS method probability [108-111]
+  class Decisions [40-136] CONTAINS method score [113-116]
+original file bytes = 6800
+dedup_file_code bytes = 9284  (ratio 1.37x)
+blocks in: 17  blocks surviving dedup: 17
+
+$ python dedup_probe.py src/lang/core.ts
+file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/lang/core.ts lines=380 units=18
+strictly-nested unit pairs: 0
+original file bytes = 26663
+dedup_file_code bytes = 23746  (ratio 0.89x)
+blocks in: 18  blocks surviving dedup: 18
+
+$ python dedup_probe.py src/tools.ts
+file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/tools.ts lines=272 units=19
+strictly-nested unit pairs: 0
+original file bytes = 14843
+dedup_file_code bytes = 10153  (ratio 0.68x)
+blocks in: 19  blocks surviving dedup: 19
+
+$ python dedup_probe.py src/generation.ts
+file=/home/firstmate/.treehouse/jev-code-22114f/1/jev-code/src/generation.ts lines=125 units=16
+strictly-nested unit pairs: 0
+original file bytes = 8871
+dedup_file_code bytes = 4932  (ratio 0.56x)
+blocks in: 16  blocks surviving dedup: 16
+

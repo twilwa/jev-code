@@ -1,0 +1,17 @@
+# Pin resolution — run 2026-09-20 on branch fm/jc-bend2-adapter
+
+$ git rev-parse HEAD
+a7585c9fde77357afcc3bf3188bfe1105ae4ef92
+
+$ git ls-remote https://github.com/twilwa/jev-code
+a7585c9fde77357afcc3bf3188bfe1105ae4ef92	HEAD
+a7585c9fde77357afcc3bf3188bfe1105ae4ef92	refs/heads/main
+
+$ git ls-remote https://github.com/rhighs/jev-code | grep -E 'HEAD|refs/heads/'
+a7585c9fde77357afcc3bf3188bfe1105ae4ef92	HEAD
+a7585c9fde77357afcc3bf3188bfe1105ae4ef92	refs/heads/main
+
+$ git ls-remote https://github.com/bendlang/bend | grep -E 'HEAD|refs/heads/'
+7561656155a4285c1e4ccfcb3505ab59524de973	HEAD
+7561656155a4285c1e4ccfcb3505ab59524de973	refs/heads/main
+59fcc766aabf5b1fc0b1abe585de9caac544701a	refs/heads/pump

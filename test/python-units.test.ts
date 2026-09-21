@@ -114,10 +114,20 @@ test('at most four unit requests are in flight with six units', async () => {
   const units: SlotEntry[] = [{ slot: 'unit_count', answer: '6' }];
   const names = ['a', 'b', 'c', 'd', 'e', 'f'];
   names.forEach((n, i) => units.push({ slot: `unit_${i}_name`, answer: { value: n } }, { slot: `unit_${i}_arity`, answer: '0' }, { slot: `unit_${i}_purpose`, answer: { value: 'helper' } }));
-  const provider = new GateProvider([...units, ...names.map(() => ({ slot: 'function_body', answer: 'pass', once: true })), { slot: 'function_body', answer: 'finish' },
-    { slot: 'module_body', answer: 'finish' }], async s => { if (s.generation.unit) await new Promise(resolve => setTimeout(resolve, 15)); });
+  const unitBodies: SlotEntry[] = names.flatMap(unit => [
+    { unit, slot: 'function_body', answer: 'pass', once: true },
+    { unit, slot: 'function_body', answer: 'finish' },
+  ]);
+  const provider = new GateProvider([...units, ...unitBodies,
+    { slot: 'module_body', answer: 'finish' }], async s => { if (s.generation.unit) await new Promise(resolve => setTimeout(resolve, s.generation.unit === 'a' ? 0 : 40)); });
   const source = await generatePythonAst(decisions(provider), { task: { prompt: 'Python helper functions a b c d e f.' } }, 'content', options);
   assert.equal((source.match(/^def /gm) ?? []).length, 6);
+  for (const unit of names) {
+    const requests = provider.criteria.filter(entry => entry.unit === unit && entry.slot === 'function_body');
+    assert.equal(requests.length, 2, `${unit} did not receive its own two-step body script`);
+    assert.ok(requests[0]!.keys.includes('pass'));
+    assert.ok(!requests[1]!.keys.includes('pass'));
+  }
   assert.ok(provider.maxPending <= 4, `max in flight ${provider.maxPending}`);
   assert.ok(provider.maxPending >= 2, `units did not overlap: ${provider.maxPending}`);
 });

@@ -1,0 +1,29 @@
+# Licence scan — jev-code @ a7585c9fde77357afcc3bf3188bfe1105ae4ef92 — 2026-09-20
+# Run against the pinned tracked tree only (this pilot's own new docs excluded).
+
+## 1. Filename search over tracked files
+$ git ls-files | grep -iE 'licen[cs]e|copying|notice|copyright'
+(empty = no licence/notice file is tracked anywhere in the repository)
+
+## 2. Filename search over the working tree at the pinned commit
+$ git ls-tree -r --name-only a7585c9 | grep -iE 'licen[cs]e|copying|notice|copyright'
+(empty = confirmed at the pin)
+
+## 3. package.json license field
+$ node -e "const p=require('./package.json'); console.log('license:', p.license); console.log('private:', p.private)"
+license: undefined
+private: true
+
+## 4. Content grep over every file tracked at the pin
+$ git grep -n -iE 'copyright|\blicen[cs]e[sd]?\b|\bSPDX\b|\bMIT\b|Apache-2|\bGPL\b|\bBSD\b|all rights reserved' a7585c9
+a7585c9:docs/brainstorms/2026-09-19-typed-decision-program-sdk-requirements.md:112:- Actual npm publication pending owner-controlled package naming and license decisions.
+Binary file a7585c9:docs/media/session.gif matches
+^ exactly one hit: upstream's own note that the licence decision is unmade.
+
+## 5. Files tracked at the pin
+$ git ls-tree -r --name-only a7585c9 | wc -l
+130
+
+## CONCLUSION: licence UNRESOLVED. No licence file, no license field,
+## no notice in any tracked file. Nothing inferred from 'private: true'.
+## Nothing inferred from dependency licences. No licence file added.

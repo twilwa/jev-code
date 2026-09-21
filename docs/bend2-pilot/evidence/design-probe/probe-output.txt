@@ -1,0 +1,339 @@
+# Bend 2 design probes - which core-IR constructs can be rendered into legal Bend 2?
+# bendlang/bend @ 7561656155a4285c1e4ccfcb3505ab59524de973
+# Run 2026-09-20 on Node v24.21.0, Linux x86_64, CPU-only, no Bun, no GPU, no API key.
+#
+# These are phase-2 inspection probes: hand-written candidate renderings checked
+# against the real Bend checker to decide native AST vs typed IR vs bounded grammar.
+# They are not implementation code and nothing here is imported by the harness.
+#
+# Reproduce: ./run-all.sh   (check.mjs expects the pinned clone at ../bend)
+
+== p1-io-print.bend
+   | import Base
+   | 
+   | law main:
+   |   IO(Unit)
+   | 
+   | def main():
+   |   do IO<Unit>:
+   |     IO.print("Hello, world!")
+  PARSE   ok (n0=479)
+  TYPE    ok
+  OWNED   ok
+  HOLES   hols=0 open=0
+   exit=0
+
+== p10-let-reuse.bend
+   | import Base
+   | 
+   | law main:
+   |   IO(Unit)
+   | 
+   | def main():
+   |   do IO<Unit>:
+   |     x : U32 = 21
+   |     IO.print(U32.show(U32.add(x, x)))
+  PARSE   ok (n0=479)
+  TYPE    FAIL Err exp="x" obs="x (consumed more than once)" ctx={"$":"Emp"}
+   exit=1
+
+== p11-copyable-let.bend
+   | import Base
+   | 
+   | law main:
+   |   IO(Unit)
+   | 
+   | def main():
+   |   do IO<Unit>:
+   |     +x : U32 = 21
+   |     IO.print(U32.show(U32.add(x, x)))
+  PARSE   ok (n0=479)
+  TYPE    ok
+  OWNED   ok
+  HOLES   hols=0 open=0
+   exit=0
+
+== p12-assign-via-param.bend
+   | import Base
+   | 
+   | law main.go:
+   |   for +x: U32
+   |   IO(Unit)
+   | 
+   | def main.go(x):
+   |   do IO<Unit>:
+   |     IO.print(U32.show(U32.add(x, x)))
+   | 
+   | law main:
+   |   IO(Unit)
+   | 
+   | def main():
+   |   main.go(21)
+  PARSE   ok (n0=479)
+  TYPE    ok
+  OWNED   ok
+  HOLES   hols=0 open=0
+   exit=0
+
+== p13-arith-nested.bend
+   | import Base
+   | 
+   | law main:
+   |   IO(Unit)
+   | 
+   | def main():
+   |   do IO<Unit>:
+   |     +a : U32 = 6
+   |     +b : U32 = 7
+   |     IO.print(U32.show(U32.mul(U32.add(a, 0), b)))
+  PARSE   ok (n0=479)
+  TYPE    ok
+  OWNED   ok
+  HOLES   hols=0 open=0
+   exit=0
+
+== p14-compare-bool.bend
+   | import Base
+   | 
+   | def main() -> IO(Unit):
+   |   do IO<Unit>:
+   |     +a : U32 = 6
+   |     IO.print(Bool.show(U32.is_eq(a, 6)))
+  PARSE   ok (n0=479)
+  TYPE    ok
+  OWNED   ok
+  HOLES   hols=0 open=0
+   exit=0
+
+== p15-string-concat.bend
+   | import Base
+   | 
+   | law main:
+   |   IO(Unit)
+   | 
+   | def main():
+   |   do IO<Unit>:
+   |     +s : String = "ab"
+   |     IO.print(String.append(s, "cd"))
+  PARSE   ok (n0=479)
+  TYPE    ok
+  OWNED   ok
+  HOLES   hols=0 open=0
+   exit=0
+
+== p16-while-as-recursion.bend
+   | import Base
+   | 
+   | law loop:
+   |   for n: Nat
+   |   for +acc: U32
+   |   U32
+   | 
+   | def loop(n, acc):
+   |   match n:
+   |     case 0n:
+   |       acc
+   |     case 1n+m:
+   |       loop(m, U32.add(acc, 1))
+   | 
+   | law main:
+   |   IO(Unit)
+   | 
+   | def main():
+   |   do IO<Unit>:
+   |     IO.print(U32.show(loop(5n, 0)))
+  PARSE   ok (n0=479)
+  TYPE    ok
+  OWNED   ok
+  HOLES   hols=0 open=0
+   exit=0
+
+== p17-inline-typed-def.bend
+   | import Base
+   | 
+   | def add2(a: U32, b: U32) -> U32:
+   |   U32.add(a, b)
+   | 
+   | def main() -> IO(Unit):
+   |   do IO<Unit>:
+   |     IO.print(U32.show(add2(2, 3)))
+  PARSE   ok (n0=479)
+  TYPE    ok
+  OWNED   ok
+  HOLES   hols=0 open=0
+   exit=0
+
+== p18-inline-copyable-param.bend
+   | import Base
+   | 
+   | def dbl(+a: U32) -> U32:
+   |   U32.add(a, a)
+   | 
+   | def main() -> IO(Unit):
+   |   do IO<Unit>:
+   |     IO.print(U32.show(dbl(21)))
+  PARSE   ok (n0=479)
+  TYPE    ok
+  OWNED   ok
+  HOLES   hols=0 open=0
+   exit=0
+
+== p2-typed-fn-linear.bend
+   | import Base
+   | 
+   | law add2:
+   |   for a: U32
+   |   for b: U32
+   |   U32
+   | 
+   | def add2(a, b):
+   |   U32.add(a, b)
+   | 
+   | law main:
+   |   U32
+   | 
+   | def main(): add2(2, 3)
+  PARSE   ok (n0=479)
+  TYPE    ok
+  OWNED   ok
+  HOLES   hols=0 open=0
+   exit=0
+
+== p3-unused-param.bend
+   | import Base
+   | 
+   | law drop_b:
+   |   for a: U32
+   |   for b: U32
+   |   U32
+   | 
+   | def drop_b(a, b):
+   |   a
+   | 
+   | law main:
+   |   U32
+   | 
+   | def main(): drop_b(2, 3)
+  PARSE   ok (n0=479)
+  TYPE    ok
+  OWNED   ok
+  HOLES   hols=0 open=0
+   exit=0
+
+== p4-param-used-twice.bend
+   | import Base
+   | 
+   | law dbl:
+   |   for a: U32
+   |   U32
+   | 
+   | def dbl(a):
+   |   U32.add(a, a)
+   | 
+   | law main:
+   |   U32
+   | 
+   | def main(): dbl(21)
+  PARSE   ok (n0=479)
+  TYPE    FAIL Err exp="a" obs="a (consumed more than once)" ctx={"$":"Emp"}
+   exit=1
+
+== p5-bool-match.bend
+   | import Base
+   | 
+   | law pick:
+   |   for b: Bool
+   |   U32
+   | 
+   | def pick(b):
+   |   match b:
+   |     case True{}:
+   |       1
+   |     case False{}:
+   |       0
+   | 
+   | law main:
+   |   U32
+   | 
+   | def main(): pick(True{})
+  PARSE   ok (n0=479)
+  TYPE    ok
+  OWNED   ok
+  HOLES   hols=0 open=0
+   exit=0
+
+== p6-do-let-seq.bend
+   | import Base
+   | 
+   | law main:
+   |   IO(Unit)
+   | 
+   | def main():
+   |   do IO<Unit>:
+   |     x : U32 = 40
+   |     y : U32 = 2
+   |     IO.print(U32.show(U32.add(x, y)))
+  PARSE   ok (n0=479)
+  TYPE    ok
+  OWNED   ok
+  HOLES   hols=0 open=0
+   exit=0
+
+== p7-two-prints.bend
+   | import Base
+   | 
+   | law main:
+   |   IO(Unit)
+   | 
+   | def main():
+   |   do IO<Unit>:
+   |     u : Unit <- IO.print("first")
+   |     IO.print("second")
+  PARSE   ok (n0=479)
+  TYPE    ok
+  OWNED   ok
+  HOLES   hols=0 open=0
+   exit=0
+
+== p8-copyable-param.bend
+   | import Base
+   | 
+   | law dbl:
+   |   for +a: U32
+   |   U32
+   | 
+   | def dbl(a):
+   |   U32.add(a, a)
+   | 
+   | law main:
+   |   U32
+   | 
+   | def main(): dbl(21)
+  PARSE   ok (n0=479)
+  TYPE    ok
+  OWNED   ok
+  HOLES   hols=0 open=0
+   exit=0
+
+== p9-copyable-string.bend
+   | import Base
+   | 
+   | law twice:
+   |   for +s: String
+   |   String
+   | 
+   | def twice(s):
+   |   String.append(s, s)
+   | 
+   | law main:
+   |   IO(Unit)
+   | 
+   | def main():
+   |   do IO<Unit>:
+   |     IO.print(twice("ab"))
+  PARSE   ok (n0=479)
+  TYPE    ok
+  OWNED   ok
+  HOLES   hols=0 open=0
+   exit=0
+

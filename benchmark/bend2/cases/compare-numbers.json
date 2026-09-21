@@ -1,0 +1,8 @@
+{
+  "$schema": "../case.schema.json",
+  "schemaVersion": 1,
+  "id": "compare-numbers",
+  "task": "Compare 9 with 9 and print the Bend Bool result.",
+  "expected": { "stdout": "True\n", "exitCode": 0 },
+  "offlineStrategy": "compare-numbers.json"
+}

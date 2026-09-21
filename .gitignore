@@ -5,3 +5,16 @@ dist/
 __pycache__/
 .venv/
 *.tsbuildinfo
+
+# CoderMind ignores (managed by `cmind init/update`)
+.cmind/*
+!.cmind/config.toml
+.rpgkit/
+.venv_dev/
+.cmind_dev_env/
+.vscode/mcp.json
+.vscode/tasks.json
+.mcp.json
+.claude/commands/
+.benchmark-tools/
+benchmark/bend2/results/

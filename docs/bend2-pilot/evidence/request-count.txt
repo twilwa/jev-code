@@ -1,0 +1,11 @@
+# Decision requests per generated Bend program.
+# Produced by request-count.mts on Node v24.21.0, Linux x86_64, CPU-only,
+# run 2026-09-20 against a seeded RNG provider (no model, no paid API spend).
+#
+# A request count measures how much work the decision loop asks of a provider.
+# It is NOT a quality result. Nothing in this file parses, type checks or
+# executes the programs counted; those are separate claims with separate
+# evidence (see 04-report.md).
+
+programs=40 total_requests=882 min=4 median=20 max=54 mean=22.1
+lines min=6 max=15

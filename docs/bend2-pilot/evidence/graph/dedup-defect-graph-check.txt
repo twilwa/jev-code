@@ -1,0 +1,24 @@
+# TES-36 line-overlap dedup defect - does it affect THIS graph?
+# Companion to ../dedup-defect-check.txt, which traces the mechanism and
+# reproduces it on this repository's own TypeScript.  This file answers the
+# narrower question the brief asks: whether the defect reaches the graph
+# artefact committed at ./rpg.json.  Run 2026-09-20.
+
+$ python3 dedup-reachability.py \
+      <cmind-cli>/core_pack/scripts \
+      docs/bend2-pilot/evidence/graph/rpg.json
+CHECK 1 - static reachability from the encode entry point
+  modules in the import closure            : 12
+  of those, referencing common.code_dedup  : NONE
+
+CHECK 2 - does the artefact store source text at all?
+  rpg nodes                                : 649
+  rpg nodes with non-empty meta.content    : 0
+  dep_graph nodes                          : 752
+  dep_graph nodes with a 'code' field      : 0
+  dep_graph node fields                    : ['type', 'module', 'name', 'code_path', 'rpg_nodes']
+
+# Every importer of the helper, across the whole installed script tree:
+$ grep -rn 'from common.code_dedup import' <cmind-cli>/core_pack/scripts --include='*.py'
+<cmind-cli>/core_pack/scripts/func_design/interfaces_store.py:20:from common.code_dedup import dedup_file_code
+<cmind-cli>/core_pack/scripts/plan_tasks.py:25:from common.code_dedup import dedup_file_code
