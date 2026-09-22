@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "property": {
+    "name": "dbl returns x + x",
+    "law": "dbl : U32 -> U32",
+    "inputs": [0, 1, 2, 7, 21, 100],
+    "expectedStdout": "0\n2\n4\n14\n42\n200\n",
+    "referenceExpression": "U32.add(a, a)"
+  },
+  "defects": [
+    { "id": "identity", "description": "Return the input unchanged.", "expression": "a" },
+    { "id": "constant-zero", "description": "Ignore the input and always return zero.", "expression": "0" },
+    { "id": "add-one", "description": "Add one instead of doubling.", "expression": "U32.add(a, 1)" },
+    { "id": "square", "description": "Multiply the input by itself.", "expression": "U32.mul(a, a)" },
+    { "id": "double-plus-one", "description": "Add one to the doubled value.", "expression": "U32.add(U32.add(a, a), 1)" },
+    { "id": "subtract-self", "description": "Subtract the input from itself.", "expression": "U32.sub(a, a)" },
+    { "id": "double-minus-one", "description": "Subtract one from the doubled value.", "expression": "U32.sub(U32.add(a, a), 1)" },
+    { "id": "triple", "description": "Add the input three times.", "expression": "U32.add(U32.add(a, a), a)" }
+  ]
+}

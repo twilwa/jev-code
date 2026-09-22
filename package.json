@@ -37,6 +37,7 @@
     "benchmark:bend2:setup": "bash scripts/setup-bend2-toolchain.sh",
     "benchmark:bend2:offline": "tsx benchmark/bend2/run.ts --offline",
     "benchmark:bend2": "bash scripts/setup-bend2-toolchain.sh && tsx benchmark/bend2/run.ts --offline",
+    "benchmark:bend2:verifier-vs-law": "tsx benchmark/bend2/verifier-vs-law/run.ts",
     "prepack": "pnpm run build"
   },
   "dependencies": {
