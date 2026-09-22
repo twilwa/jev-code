@@ -27,7 +27,7 @@ const makeRoot = async (): Promise<{ root: string; repo: string; tmp: string }> 
 
 type StubMode = 'answered' | 'abstained' | 'budget_refused';
 
-const stubHelper = async (tmp: string, mode: StubMode, gate?: string): Promise<string> => {
+const stubHelper = async (tmp: string, mode: StubMode, gate?: string, gapByDeclarationKind = false): Promise<string> => {
   const helper = join(tmp, `jevhelper-${mode}.cjs`);
   const record = join(tmp, 'calls.log');
   const script = `#!/usr/bin/env node
@@ -42,7 +42,7 @@ const declarations = input.states.map((state) => ({
   target: state.target,
   diff_sha256: state.diff_sha256,
   outcome: ${JSON.stringify(mode)},
-  verdicts: ${mode === 'budget_refused' ? '[]' : `[{ gap: 'property_missing', confidence: 0.9, abstain: ${mode === 'abstained'}, answer: { type: 'noul', probability: 0.9, abstain: ${mode === 'abstained'} } }]`},
+  verdicts: ${mode === 'budget_refused' ? '[]' : `[{ gap: ${gapByDeclarationKind ? "state.state.root.declarationKind + '_gap'" : "'property_missing'"}, confidence: 0.9, abstain: ${mode === 'abstained'}, answer: { type: 'noul', probability: 0.9, abstain: ${mode === 'abstained'} } }]`},
   ...(${JSON.stringify(mode)} === 'budget_refused' ? { reason: 'run_budget_exceeded', failure: { kind: 'budget_exceeded' } } : {}),
 }));
 fs.writeFileSync(fd, JSON.stringify({ schema_version: 'jevhelper/watch-verdicts-v1', declarations }) + '\\n');
@@ -151,23 +151,40 @@ test('budget refusal and abstention are declaration-scoped advisories', async ()
   }
 });
 
+test('same-named law and definition use distinct freshness identities', async () => {
+  const { repo, tmp } = await makeRoot();
+  const helper = await stubHelper(tmp, 'answered', undefined, true);
+  const file = join(repo, 'main.bend');
+  await writeFile(file, 'law same:\n  U32\n\ndef same():\n  0\n');
+  const messages: string[] = [];
+  const runner = createWatchRunner({ sendAdvisory: message => messages.push(message), onError: error => { throw error; } });
+  await runner.initialize(configFor(tmp, helper), 'test-session', repo);
+  await writeFile(file, 'law same:\n  {same() == 1 : U32}\n\ndef same():\n  1\n');
+  await runner.boundary();
+  await runner.flush();
+  assert.equal(messages.length, 1);
+  assert.match(messages[0]!, /main\.bend:same: law_gap/);
+  assert.match(messages[0]!, /main\.bend:same: def_gap/);
+});
+
 test('negative judgments stay quiet and measured budget exhaustion is advisory', () => {
   const hash = 'a'.repeat(64);
-  const expected = new Map([['main.bend:dbl', hash]]);
   assert.deepEqual(advisoryLines({
     schema_version: 'jevhelper/watch-verdicts-v1',
     declarations: [{
+      declaration_id: 'declaration-dbl',
       target: 'main.bend:dbl', diff_sha256: hash, outcome: 'answered',
       verdicts: [{ gap: 'property_missing', abstain: false, answer: { type: 'noul', probability: 0.1 } }],
     }],
-  }, expected), []);
+  }, new Map([['declaration-dbl', hash]])), []);
   assert.deepEqual(advisoryLines({
     schema_version: 'jevhelper/watch-verdicts-v1',
     declarations: [{
+      declaration_id: 'declaration-dbl',
       target: 'main.bend:dbl', diff_sha256: hash, outcome: 'failure', verdicts: [],
       failure: { kind: 'budget_exceeded' },
     }],
-  }, expected), ['main.bend:dbl: budget_refused']);
+  }, new Map([['declaration-dbl', hash]])), ['main.bend:dbl: budget_refused']);
 });
 
 test('typed answers remain transient while watcher states are written to tmp', async () => {

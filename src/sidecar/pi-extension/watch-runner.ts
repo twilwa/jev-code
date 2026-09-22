@@ -1,4 +1,5 @@
 import { spawn, type ChildProcess } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { lstat, readdir, readFile, realpath, writeFile } from 'node:fs/promises';
 import { basename, extname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { watchBendChanges, type BendFileSet, type WatchQuestion } from '../watch.js';
@@ -13,6 +14,7 @@ interface HelperGap {
 }
 
 interface HelperDeclaration {
+  declaration_id: string;
   target: string;
   diff_sha256: string;
   outcome: string;
@@ -55,6 +57,9 @@ const helperQuestion = (question: WatchQuestion): WatchQuestion => {
   return { ...question, criteria: { true: yes ?? 'The condition holds.', false: no ?? 'The condition does not hold.' } };
 };
 
+const declarationId = (file: string, kind: string, symbol: string): string =>
+  `declaration-${createHash('sha256').update(`${file}\0${kind}\0${symbol}`).digest('hex')}`;
+
 export const watchDocument = (
   config: PiSidecarConfig,
   sessionId: string,
@@ -67,8 +72,8 @@ export const watchDocument = (
     schema_version: 'jevhelper/watch-input-v1',
     identity: { lane: config.lane, work_item: config.workItem, session_id: sessionId },
     model: config.model,
-    states: result.chunks.map((chunk, index) => ({
-      id: `declaration-${index + 1}-${chunk.state.root.diffSha256.slice(0, 16)}`,
+    states: result.chunks.map(chunk => ({
+      id: declarationId(chunk.state.root.file, chunk.state.root.declarationKind, chunk.state.root.symbol),
       target: `${chunk.state.root.file}:${chunk.state.root.symbol}`,
       diff_sha256: chunk.state.root.diffSha256,
       state: chunk.state,
@@ -87,6 +92,7 @@ const parseVerdicts = (value: string): HelperVerdicts | undefined => {
     if (parsed.schema_version !== 'jevhelper/watch-verdicts-v1' || !Array.isArray(parsed.declarations)) return undefined;
     if (!parsed.declarations.every(declaration =>
       typeof declaration === 'object' && declaration !== null
+      && typeof declaration.declaration_id === 'string' && declaration.declaration_id.length > 0
       && typeof declaration.target === 'string'
       && /^[0-9a-f]{64}$/.test(declaration.diff_sha256)
       && typeof declaration.outcome === 'string'
@@ -178,7 +184,7 @@ const reportsGap = (verdict: HelperGap): boolean => {
 export const advisoryLines = (verdicts: HelperVerdicts, expected: Map<string, string>): string[] => {
   const lines: string[] = [];
   for (const declaration of verdicts.declarations) {
-    if (expected.get(declaration.target) !== declaration.diff_sha256) continue;
+    if (expected.get(declaration.declaration_id) !== declaration.diff_sha256) continue;
     const target = declaration.target.replace(/[\r\n\t]/g, ' ');
     if (declaration.outcome === 'budget_refused'
       || (declaration.outcome === 'failure' && declaration.failure?.kind === 'budget_exceeded')) {
@@ -247,8 +253,8 @@ export const createWatchRunner = (options: RunnerOptions) => {
         const verdicts = await runHelper(activeConfig, document, activeRoot, directory, active);
         if (!verdicts || closed || generation !== activeGeneration) return;
         const current = watchDocument(activeConfig, activeSessionId, base, await collectBendFiles(activeRoot));
-        const fresh = new Map((current?.states as Array<{ target: string; diff_sha256: string }> | undefined)
-          ?.map(state => [state.target, state.diff_sha256]) ?? []);
+        const fresh = new Map((current?.states as Array<{ id: string; diff_sha256: string }> | undefined)
+          ?.map(state => [state.id, state.diff_sha256]) ?? []);
         const lines = advisoryLines(verdicts, fresh);
         if (lines.length > 0) options.sendAdvisory(`Jev Bend sidecar advisory\n${lines.map(line => `- ${line}`).join('\n')}`);
       }).catch(error => options.onError?.(error));
