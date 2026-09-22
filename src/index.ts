@@ -14,3 +14,5 @@ export { generateBashAst, renderBashAst, validateBashSource, type BashAst } from
 export type { CharacterSymbol, GridCursor, GridProgress, ScoredCell, TextChange, TextProgress } from './grid.js';
 export type { Field, HarnessEvent, RunResult, RunStatus, Tool, ToolContext, ToolResult } from './types.js';
 export * from './sdk/index.js';
+export { watchBendChanges, WATCH_CHUNK_CHARACTER_LIMIT,
+  type BendFileSet, type BendWatchResult, type DeclarationWatchState, type WatchChunk, type WatchQuestion } from './sidecar/watch.js';
