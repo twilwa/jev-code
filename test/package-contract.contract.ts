@@ -53,6 +53,7 @@ test('packed ESM package satisfies the public consumer contract', { timeout: 180
     'package/package.json',
     'package/README.md',
     'package/docs/sdk.md',
+    'package/docs/sidecar/pi-extension.md',
     'package/examples/router.ts',
     'package/examples/dependency-tree.ts',
   ]);
@@ -62,6 +63,7 @@ test('packed ESM package satisfies the public consumer contract', { timeout: 180
   assert.ok(entries.includes('package/dist/index.js'));
   assert.ok(entries.includes('package/dist/index.d.ts'));
   assert.ok(entries.includes('package/dist/cli.js'));
+  assert.ok(entries.includes('package/dist/sidecar/pi-extension/index.js'));
   const removedPaths = [
     'providers/', 'propose/', 'propose.js', 'action-map.js', 'action-map.d.ts', 'program-map.js', 'program-map.d.ts',
   ];
