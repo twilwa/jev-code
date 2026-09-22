@@ -44,6 +44,28 @@ test('watch state is stable across file insertion order and repeated runs', () =
   )), expected);
 });
 
+test('same-named declarations in different modules do not borrow laws or proof definitions', () => {
+  const base = { files: {
+    'a.bend': 'law main:\n  U32\n\ndef main():\n  0\n',
+    'b.bend': 'law main:\n  {main() == 1 : U32}\n\ndef main():\n  1\n',
+  } };
+  const head = { files: { ...base.files, 'a.bend': 'law main:\n  U32\n\ndef main():\n  2\n' } };
+  const chunk = watchBendChanges(base, head).chunks[0]!;
+  assert.equal(chunk.state.root.file, 'a.bend');
+  assert.deepEqual(chunk.state.laws.map(law => [law.file, law.classification, law.pairedDefinition]),
+    [['a.bend', 'type_only', 'a.bend:main']]);
+  assert.match(chunk.questions.property_missing!.instructions, /only declared law is a function type/);
+});
+
+test('a changed test declaration is not its own connected evidence', () => {
+  const base = { files: { 'test/dbl.bend': 'def dbl_test():\n  dbl(1)\n' } };
+  const head = { files: { 'test/dbl.bend': 'def dbl_test():\n  dbl(2)\n' } };
+  const chunk = watchBendChanges(base, head).chunks[0]!;
+  assert.equal(chunk.state.root.symbol, 'dbl_test');
+  assert.deepEqual(chunk.state.evidence.tests, []);
+  assert.equal(chunk.state.evidence.propertyChangedInDiff, false);
+});
+
 test('state records behavioral laws, evidence, holes, trust markers, and ownership changes', () => {
   const base = { files: {
     'main.bend': 'law dbl:\n  for +a: U32\n  {dbl(a) == U32.add(a, a) : U32}\n\ndef dbl(a):\n  U32.add(a, a)\n',

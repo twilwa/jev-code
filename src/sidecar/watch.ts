@@ -181,6 +181,11 @@ const nodeKinds = (source: string): string[] => unique([
 const dependencyNames = (declaration: Declaration): string[] => unique(callees(declaration.source)
   .filter(name => name !== declaration.name && !['for', 'law', 'def'].includes(name)));
 
+const moduleNames = (file: string): string[] => {
+  const raw = file.split('/').at(-1)?.replace(/\.bend$/i, '') ?? file;
+  return unique([raw, raw.length ? raw[0]!.toUpperCase() + raw.slice(1).toLowerCase() : raw]);
+};
+
 const classifyLaw = (law: Declaration, definitions: Declaration[]): LawState => {
   const proposition = law.body.split('\n').map(line => line.trim()).filter(line => line && !line.startsWith('for ')).join(' ');
   const behavioral = /==|!=|\b(Equal|Less|Greater|Bound|Invariant|Preserv|Sorted|Perm)\b/i.test(proposition)
@@ -191,8 +196,12 @@ const classifyLaw = (law: Declaration, definitions: Declaration[]): LawState => 
     : /\b(Bound|Range|Min|Max)\b/i.test(proposition) ? 'bounds'
     : /\b(Preserv|Perm)\b/i.test(proposition) ? 'preservation'
     : /\bInvariant\b/i.test(proposition) ? 'invariant' : 'other';
-  const paired = definitions.find(definition => definition.kind === 'def'
-    && (definition.name === law.name || definition.name.endsWith(`.${law.name}`)));
+  const modules = moduleNames(law.file);
+  const paired = definitions.find(definition => definition.kind === 'def' && definition.file === law.file && definition.name === law.name)
+    ?? definitions.find(definition => {
+      const parts = definition.name.split('.');
+      return definition.kind === 'def' && parts.at(-1) === law.name && modules.includes(parts.slice(0, -1).join('.'));
+    });
   return { name: law.name, file: law.file, span: law.span, normalizedProposition: normalized(proposition),
     classification: behavioral ? 'behavioral_property' : 'type_only', propertyKind: kind,
     pairedDefinition: paired ? `${paired.file}:${paired.name}` : null, status: paired ? 'filled' : 'open',
@@ -206,9 +215,17 @@ const evidenceKind = (declaration: Declaration): EvidenceState['kind'] | null =>
   return null;
 };
 
-const evidenceFor = (declarations: Declaration[], root: string): EvidenceState[] => declarations.flatMap(declaration => {
+const callsDeclaration = (declaration: Declaration, root: Declaration, definitions: Declaration[]): boolean => {
+  const calls = callees(declaration.body);
+  const qualified = moduleNames(root.file).map(module => `${module}.${root.name}`);
+  if (calls.some(call => qualified.includes(call))) return true;
+  const sameNamedDefinitions = definitions.filter(item => item.kind === 'def' && item.name === root.name);
+  return calls.includes(root.name) && (declaration.file === root.file || sameNamedDefinitions.length === 1);
+};
+
+const evidenceFor = (declarations: Declaration[], root: Declaration): EvidenceState[] => declarations.flatMap(declaration => {
   const kind = evidenceKind(declaration);
-  const targets = unique(callees(declaration.source).filter(callee => callee === root));
+  const targets = callsDeclaration(declaration, root, declarations) ? [root.name] : [];
   if (!kind || targets.length === 0) return [];
   const values = literals(declaration.body);
   return [{ name: declaration.name, file: declaration.file, span: declaration.span, kind, targets,
@@ -231,6 +248,11 @@ const binderState = (declaration: Declaration | undefined, declarations: Declara
   return declaration.parameters.map((item, index) => ({ ...item,
     quantity: item.quantity === 'affine' ? lawParameters[index]?.quantity ?? item.quantity : item.quantity,
     uses: bodyIds.filter(id => id === item.name).length }));
+};
+
+const lawAppliesTo = (law: Declaration, root: Declaration, definitions: Declaration[]): boolean => {
+  if (law.file === root.file && law.name === root.name) return true;
+  return callsDeclaration(law, root, definitions);
 };
 
 const changedUses = (from: Array<{ name: string; uses: number }>, to: Array<{ name: string; uses: number }>): Array<{ name: string; count: number }> => {
@@ -351,11 +373,10 @@ export const watchBendChanges = (base: BendFileSet, head: BendFileSet): BendWatc
     const current = after ?? before!;
     const beforeCalls = before ? callees(before.body) : [];
     const afterCalls = after ? callees(after.body) : [];
-    const laws = afterAll.filter(item => item.kind === 'law'
-      && (item.name === current.name || callees(item.body).includes(current.name)))
+    const laws = afterAll.filter(item => item.kind === 'law' && lawAppliesTo(item, current, afterAll))
       .map(law => classifyLaw(law, afterAll));
-    const currentEvidence = evidenceFor(afterAll, current.name);
-    const oldEvidence = evidenceFor(beforeAll, current.name);
+    const currentEvidence = evidenceFor(afterAll, current);
+    const oldEvidence = evidenceFor(beforeAll, before ?? current);
     const beforeBinders = binderState(before, beforeAll);
     const afterBinders = binderState(after, afterAll);
     const rootHash = hash(`${before?.source ?? ''}\0${after?.source ?? ''}`);
