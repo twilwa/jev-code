@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { BendCheckError } from '../../../src/bend-ast.js';
 
 export interface Defect { id: string; description: string; expression: string }
 export interface VerifierVsLawFixture {
@@ -93,3 +94,8 @@ ${calls}
 
 export const empiricalVerifierCaught = (execution: ExecutionOutcome, expectedStdout: string): boolean =>
   execution.status !== 'ran' || execution.exitCode !== 0 || execution.stdout !== expectedStdout;
+
+export const classifyLawRejection = (error: unknown): { caught: true; detail: string } => {
+  if (!(error instanceof BendCheckError)) throw error;
+  return { caught: true, detail: error.message };
+};

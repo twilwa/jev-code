@@ -5,7 +5,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { executeBendSource, inspectBenchmarkToolchain } from '../../../src/bend-semantic-benchmark.js';
 import { validateBendSource } from '../../../src/bend-ast.js';
-import { empiricalVerifierCaught, loadFixture, renderLawCandidate, renderVerifierCandidate } from './harness.js';
+import { classifyLawRejection, empiricalVerifierCaught, loadFixture, renderLawCandidate, renderVerifierCandidate } from './harness.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repository = resolve(here, '..', '..', '..');
@@ -30,7 +30,11 @@ for (const defect of fixture.defects) {
   let lawCaught = false;
   let lawDetail: string | null = null;
   try { await validateBendSource(renderLawCandidate(defect), new AbortController().signal); }
-  catch (error) { lawCaught = true; lawDetail = error instanceof Error ? error.message : String(error); }
+  catch (error) {
+    const rejection = classifyLawRejection(error);
+    lawCaught = rejection.caught;
+    lawDetail = rejection.detail;
+  }
   const lawLatencyMs = performance.now() - lawStarted;
 
   const verifierStarted = performance.now();

@@ -52,6 +52,11 @@ each expression in the table. Both arms receive the same replacement:
    output with the fixed expectation. An execution failure or output mismatch
    means the verifier caught the defect.
 
+The law arm counts only a `BendCheckError` from those validation stages as a
+caught defect. A missing checker module, temporary-file error or other
+infrastructure failure aborts the run instead of receiving credit as a law
+rejection.
+
 The JSON report stores a separate Boolean, wall-clock latency, diagnostic and
 cost object for each arm and each defect. Cost records paid calls, input tokens,
 output tokens and US dollars. Every value is zero because the runner uses only

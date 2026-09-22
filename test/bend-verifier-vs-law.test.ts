@@ -3,7 +3,8 @@ import { readFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { empiricalVerifierCaught, parseFixture, renderLawCandidate, renderVerifierCandidate } from '../benchmark/bend2/verifier-vs-law/harness.js';
+import { classifyLawRejection, empiricalVerifierCaught, parseFixture, renderLawCandidate, renderVerifierCandidate } from '../benchmark/bend2/verifier-vs-law/harness.js';
+import { BendCheckError } from '../src/bend-ast.js';
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const fixtureFile = join(repository, 'benchmark', 'bend2', 'verifier-vs-law', 'defects.json');
@@ -31,6 +32,13 @@ test('the empirical verdict depends on execution and expected output, not compil
   const signals = { parse: 'pass' as const, type: 'pass' as const, ownership: 'pass' as const };
   assert.equal(empiricalVerifierCaught({ status: 'ran', stdout: 'wrong\n', exitCode: 0, detail: null, signals }, 'right\n'), true);
   assert.equal(empiricalVerifierCaught({ status: 'ran', stdout: 'right\n', exitCode: 0, detail: null, signals }, 'right\n'), false);
+});
+
+test('the law verdict counts checker rejections but rethrows infrastructure failures', () => {
+  assert.deepEqual(classifyLawRejection(new BendCheckError('type', 'Bend type check failed.')),
+    { caught: true, detail: 'Bend type check failed.' });
+  const infrastructure = new Error('checker import failed');
+  assert.throws(() => classifyLawRejection(infrastructure), error => error === infrastructure);
 });
 
 test('fixture parsing rejects a comparison with fewer than eight defects', async () => {
