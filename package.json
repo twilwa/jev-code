@@ -21,6 +21,7 @@
   },
   "files": [
     "dist/",
+    "docs/sidecar/pi-extension.md",
     "docs/sdk.md",
     "examples/router.ts",
     "examples/dependency-tree.ts",
@@ -48,9 +49,24 @@
     "typescript": "^5.9.0"
   },
   "devDependencies": {
+    "@earendil-works/pi-ai": "0.85.1",
+    "@earendil-works/pi-coding-agent": "0.85.1",
     "@types/node": "^24.0.0",
     "@types/react": "^19.3.0",
     "ink-testing-library": "^4.0.0",
     "tsx": "^4.20.0"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "0.85.1"
+  },
+  "peerDependenciesMeta": {
+    "@earendil-works/pi-coding-agent": {
+      "optional": true
+    }
+  },
+  "pi": {
+    "extensions": [
+      "./dist/sidecar/pi-extension/index.js"
+    ]
   }
 }

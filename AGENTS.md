@@ -19,6 +19,10 @@ fails closed and those tests skip. See `docs/bend2-pilot/04-report.md`.
 the offline semantic suite. Its cases, measurements, live-budget gate, and
 troubleshooting notes are documented in `docs/bend2-semantic-benchmark.md`.
 
+The optional Pi 0.85.1 Bend sidecar, including its per-session enablement and
+read-only boundaries, is documented in `docs/sidecar/pi-extension.md`. Its tests
+use a stub `jevhelper`; the normal test suite makes no live Jev calls.
+
 ## Maintaining this file
 
 Keep this file for knowledge useful to almost every future agent session in this project.
